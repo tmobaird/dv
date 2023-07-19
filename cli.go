@@ -22,8 +22,10 @@ func (c Cli) Run() {
 	}
 
 	if err != nil {
-		fmt.Printf("Failed to run command: %s", err)
+		fmt.Printf("ERROR - Failed to run command: %s", err)
 	} else {
+		fmt.Println("Todos")
+		fmt.Println("=====")
 		for _, todo := range todos {
 			fmt.Printf("%s - %s\n", todo.Id, todo.Name)
 		}
