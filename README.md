@@ -3,8 +3,7 @@
 ### Task Ideas
 
 - [x] Add tests for commands
-- [ ] Add reporter interface to print output to console
-- [ ] Simplify interface to just include name
+- [x] Add reporter interface to print output to console
 - Flags
     - [ ] Support verbose list
     - [ ] Help command
