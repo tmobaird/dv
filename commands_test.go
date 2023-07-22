@@ -72,7 +72,7 @@ func TestAdd(t *testing.T) {
 		_, gotError := add([]string{"Hello"}, rw)
 		wantErrorMessage := "Failed to read file"
 
-		asserCorrectError(t, gotError, wantErrorMessage)
+		assertCorrectError(t, gotError, wantErrorMessage)
 	})
 
 	t.Run("returns error when file cannot be written", func(t *testing.T) {
@@ -81,7 +81,7 @@ func TestAdd(t *testing.T) {
 		_, gotError := add([]string{"Hello"}, rw)
 		wantErrorMessage := "Failed to write file"
 
-		asserCorrectError(t, gotError, wantErrorMessage)
+		assertCorrectError(t, gotError, wantErrorMessage)
 	})
 }
 
@@ -104,7 +104,7 @@ func TestList(t *testing.T) {
 		_, gotError := list(rw)
 		wantErrorMessage := "Failed to read file"
 
-		asserCorrectError(t, gotError, wantErrorMessage)
+		assertCorrectError(t, gotError, wantErrorMessage)
 	})
 }
 
@@ -127,7 +127,7 @@ func TestDelete(t *testing.T) {
 		_, gotError := delete(uuid.New().String(), rw)
 		wantErrorMessage := "Failed to read file"
 
-		asserCorrectError(t, gotError, wantErrorMessage)
+		assertCorrectError(t, gotError, wantErrorMessage)
 	})
 
 	t.Run("returns error when fails to write file", func(t *testing.T) {
@@ -136,11 +136,11 @@ func TestDelete(t *testing.T) {
 		_, gotError := delete(uuid.New().String(), rw)
 		wantErrorMessage := "Failed to write file"
 
-		asserCorrectError(t, gotError, wantErrorMessage)
+		assertCorrectError(t, gotError, wantErrorMessage)
 	})
 }
 
-func asserCorrectError(t testing.TB, got error, want string) {
+func assertCorrectError(t testing.TB, got error, want string) {
 	t.Helper()
 	if got.Error() != want {
 		t.Errorf("got \"%s\" want \"%s\"", got, want)

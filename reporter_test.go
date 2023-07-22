@@ -17,9 +17,7 @@ func TestReportTodos(t *testing.T) {
 		got := ReportTodos(todos)
 		want := "- Hello\n- World\n"
 
-		if got != want {
-			t.Errorf("got %v want %v", got, want)
-		}
+		assertCorrectMessage(t, got, want)
 	})
 }
 
@@ -30,8 +28,14 @@ func TestReportError(t *testing.T) {
 		got := ReportError(err, "add")
 		want := "ERROR - Failed to execute add\n- Failed to write to file\n"
 
-		if got != want {
-			t.Errorf("got %v want %v", got, want)
-		}
+		assertCorrectMessage(t, got, want)
 	})
+}
+
+func assertCorrectMessage(t *testing.T, got, want string) {
+	t.Helper()
+
+	if got != want {
+		t.Errorf("got %v want %v", got, want)
+	}
 }
