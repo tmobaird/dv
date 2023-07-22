@@ -9,17 +9,17 @@ func TestRun(t *testing.T) {
 	t.Run("calls command", func(t *testing.T) {
 		count := 0
 		wantCount := 1
-		mockAdd := func([] string) ([]Todo, error) {
+		mockAdd := func(_ [] string, r ReaderWriter) ([]Todo, error) {
 			todos := []Todo{}
 			count += 1
 			return todos, nil
 		}
-		commandController := CommandController{add: mockAdd}
+		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
 
 		cli := Cli{
 			Command:   "add",
 			Args:      []string{"Hello", "World"},
-			Commander: commandController,
+			Commander: commander,
 		}
 
 		cli.Run()
@@ -32,17 +32,17 @@ func TestRun(t *testing.T) {
 	t.Run("calls command with args", func(t *testing.T) {
 		var gotArgs []string
 		wantArgs := []string{"Hello", "World"}
-		mockAdd := func(args [] string) ([]Todo, error) {
+		mockAdd := func(args [] string, r ReaderWriter) ([]Todo, error) {
 			todos := []Todo{}
 			gotArgs = args
 			return todos, nil
 		}
-		commandController := CommandController{add: mockAdd}
+		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
 
 		cli := Cli{
 			Command:   "add",
 			Args:      []string{"Hello", "World"},
-			Commander: commandController,
+			Commander: commander,
 		}
 
 		cli.Run()
@@ -55,17 +55,17 @@ func TestRun(t *testing.T) {
 	t.Run("does not call command when name doesnt match", func(t *testing.T) {
 		count := 0
 		wantCount := 0
-		mockAdd := func([] string) ([]Todo, error) {
+		mockAdd := func(args [] string, r ReaderWriter) ([]Todo, error) {
 			todos := []Todo{}
 			count += 1
 			return todos, nil
 		}
-		commandController := CommandController{add: mockAdd}
+		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
 
 		cli := Cli{
 			Command:   "not-echo",
 			Args:      []string{"Hello", "World"},
-			Commander: commandController,
+			Commander: commander,
 		}
 
 		cli.Run()
@@ -78,16 +78,16 @@ func TestRun(t *testing.T) {
 	t.Run("calls list command", func(t *testing.T) {
 		count := 0
 		wantCount := 1
-		mockList := func() ([]Todo, error) {
+		mockList := func(r ReaderWriter) ([]Todo, error) {
 			todos := []Todo{}
 			count += 1
 			return todos, nil
 		}
-		commandController := CommandController{list: mockList}
+		commander := Commander{List: mockList, ReaderWriter: &RealReaderWriter{}}
 
 		cli := Cli{
 			Command:   "list",
-			Commander: commandController,
+			Commander: commander,
 		}
 
 		cli.Run()
@@ -100,17 +100,17 @@ func TestRun(t *testing.T) {
 	t.Run("calls delete command", func(t *testing.T) {
 		count := 0
 		wantCount := 1
-		mockDelete := func(_ string) ([]Todo, error) {
+		mockDelete := func(_ string, r ReaderWriter) ([]Todo, error) {
 			todos := []Todo{}
 			count += 1
 			return todos, nil
 		}
-		commandController := CommandController{delete: mockDelete}
+		commander := Commander{Delete: mockDelete, ReaderWriter: &RealReaderWriter{}}
 
 		cli := Cli{
 			Command:   "delete",
 			Args: 	[]string{"123"},
-			Commander: commandController,
+			Commander: commander,
 		}
 
 		cli.Run()

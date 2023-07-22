@@ -2,7 +2,7 @@
 
 ### Task Ideas
 
-- [ ] Add tests for commands
+- [x] Add tests for commands
 - [ ] Add reporter interface to print output to console
 - [ ] Simplify interface to just include name
 - Flags

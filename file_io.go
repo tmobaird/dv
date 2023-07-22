@@ -6,7 +6,14 @@ import (
 	"os"
 )
 
-func readJSONFileToMap() ([]Todo, error) {
+type ReaderWriter interface {
+	ReadJSONFileToMap() ([]Todo, error)
+	WriteTodosToFile([]Todo) error
+}
+
+type RealReaderWriter struct {}
+
+func (r *RealReaderWriter) ReadJSONFileToMap() ([]Todo, error) {
 	raw, err := os.ReadFile("./tmp/todos.json")
 	if err != nil {
 		return nil, err
@@ -21,7 +28,7 @@ func readJSONFileToMap() ([]Todo, error) {
 	return data, nil
 }
 
-func writeTodosToFile(todos []Todo) error {
+func (r *RealReaderWriter) WriteTodosToFile(todos []Todo) error {
 	// serialize data into json
 	jsonData, err := json.MarshalIndent(todos, "", "    ")
 	if err != nil {

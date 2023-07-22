@@ -10,7 +10,8 @@ func main() {
 
 	if len(args) > 0 {
 		cmd := args[0]
-		commander := CommandController{add: add, list: list, delete: delete}
+		// commander := CommandController{add: add, list: list, delete: delete}
+		commander := Commander{Add: add, List: list, Delete: delete, ReaderWriter: &RealReaderWriter{}}
 		cli := Cli{Command: cmd, Args: args[1:], Commander: commander}
 		cli.Run()
 	} else {

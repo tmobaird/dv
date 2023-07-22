@@ -5,7 +5,7 @@ import "fmt"
 type Cli struct {
 	Command string
 	Args []string
-	Commander CommandController
+	Commander Commander
 }
 
 func (c Cli) Run() {
@@ -14,11 +14,11 @@ func (c Cli) Run() {
 
 	switch {
 		case c.Command == "list":
-			todos, err = c.Commander.list()
+			todos, err = c.Commander.List(c.Commander.ReaderWriter)
 		case c.Command == "delete":
-			todos, err = c.Commander.delete(c.Args[0])
+			todos, err = c.Commander.Delete(c.Args[0], c.Commander.ReaderWriter)
 		case c.Command == "add":
-			todos, err = c.Commander.add(c.Args)
+			todos, err = c.Commander.Add(c.Args, c.Commander.ReaderWriter)
 	}
 
 	if err != nil {

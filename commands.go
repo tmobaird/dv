@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
-func add(args []string) ([]Todo, error) {
+func add(args []string, r ReaderWriter) ([]Todo, error) {
 	// deserialize data
-	todos, err := readJSONFileToMap()
+	todos, err := r.ReadJSONFileToMap()
 
 	if err != nil {
 		todos = []Todo{}
@@ -23,17 +23,17 @@ func add(args []string) ([]Todo, error) {
 	}
 
 	todos = append(todos, newTodo)
-	writeErr := writeTodosToFile(todos)
+	writeErr := r.WriteTodosToFile(todos)
 	if writeErr != nil {
 		todos = []Todo{}
-		return todos, err
+		return todos, writeErr
 	}
 
 	return todos, nil
 }
 
-func list() ([]Todo, error) {
-	todos, err := readJSONFileToMap()
+func list(r ReaderWriter) ([]Todo, error) {
+	todos, err := r.ReadJSONFileToMap()
 
 	if err != nil {
 		todos = []Todo{}
@@ -43,8 +43,8 @@ func list() ([]Todo, error) {
 	return todos, nil
 }
 
-func delete(uid string) ([]Todo, error) {
-	todos, err := readJSONFileToMap()
+func delete(uid string, r ReaderWriter) ([]Todo, error) {
+	todos, err := r.ReadJSONFileToMap()
 
 	if err != nil {
 		todos = []Todo{}
@@ -58,11 +58,11 @@ func delete(uid string) ([]Todo, error) {
 		}
 	}
 
-	writeErr := writeTodosToFile(newTodos)
+	writeErr := r.WriteTodosToFile(newTodos)
 
 	if writeErr != nil {
 		todos = []Todo{}
-		return todos, err
+		return todos, writeErr
 	}
 
 	return newTodos, nil
