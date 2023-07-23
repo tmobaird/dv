@@ -10,12 +10,12 @@ import (
 func TestReportTodos(t *testing.T) {
 	t.Run("turns todos into string output", func(t *testing.T) {
 		todos := []Todo{
-			{Name: "Hello", CreatedAt: "dummy", Id: uuid.New()},
-			{Name: "World", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Hello", CreatedAt: "dummy", Id: uuid.New(), Done: false},
+			{Name: "World", CreatedAt: "dummy", Id: uuid.New(), Done: true},
 		}
 
 		got := ReportTodos(todos, false)
-		want := "- Hello\n- World\n"
+		want := "[ ] Hello\n[✓] World\n"
 
 		assertCorrectMessage(t, got, want)
 	})
@@ -23,11 +23,11 @@ func TestReportTodos(t *testing.T) {
 	t.Run("shows todo id when verbose", func(t *testing.T) {
 		todoId := uuid.New()
 		todos := []Todo{
-			{Name: "Hello", CreatedAt: "dummy", Id: todoId},
+			{Name: "Hello", CreatedAt: "dummy", Id: todoId, Done: false},
 		}
 
 		got := ReportTodos(todos, true)
-		want := "- Hello (" + todos[0].Id.String() + ")\n"
+		want := "[ ] Hello (" + todos[0].Id.String() + ")\n"
 
 		assertCorrectMessage(t, got, want)
 	})

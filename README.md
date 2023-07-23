@@ -8,8 +8,11 @@
     - [x] Support verbose list
     - [x] Help command
     - [ ] Test flags interface
+- [x] Support marking as completed
+- [x] Support marking as not completed
 - [ ] Support editing of todos
-- [ ] Support marking as completed
-- [ ] Support marking as not completed
 - [ ] Support batch remove todos
 - [ ] Support batch add todos
+- [ ] Perform actions on todos by index or uuid
+- Persistent configurations
+    - [ ] Dont show completed by default

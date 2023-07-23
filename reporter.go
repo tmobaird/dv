@@ -6,7 +6,12 @@ func ReportTodos (todos []Todo, verbose bool) string {
 	var output string
 
 	for _, todo := range todos {
-		output += "- " + todo.Name
+		if todo.Done {
+			output += "[✓] "
+		} else {
+			output += "[ ] "
+		}
+		output += todo.Name
 
 		if verbose {
 			output += " (" + todo.Id.String() + ")"

@@ -23,6 +23,8 @@ func helpIfNecessary(args []string) {
 		fmt.Println("  add <name>     Add a new todo")
 		fmt.Println("  list           List all todos")
 		fmt.Println("  delete <uuid>  Delete a todo")
+		fmt.Println("  done <uuid>    Mark a todo as done")
+		fmt.Println("  undo <uuid>  Mark a todo as not done")
 		os.Exit(0)
 	}
 }
@@ -41,7 +43,7 @@ func main() {
 
 	if len(args) > 0 {
 		cmd := args[0]
-		commander := Commander{Add: add, List: list, Delete: delete, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Add: add, List: list, Delete: delete, Done: done, Undo: undo, ReaderWriter: &RealReaderWriter{}}
 		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose}
 		cli.Run()
 	} else {

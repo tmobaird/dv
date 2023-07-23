@@ -22,6 +22,12 @@ func (c Cli) Run() {
 			todos, err = c.Commander.Delete(c.Args[0], c.Commander.ReaderWriter)
 		case c.Command == "add":
 			todos, err = c.Commander.Add(c.Args, c.Commander.ReaderWriter)
+		case c.Command == "done":
+			todos, err = c.Commander.Done(c.Args[0], c.Commander.ReaderWriter)
+		case c.Command == "undo":
+			todos, err = c.Commander.Undo(c.Args[0], c.Commander.ReaderWriter)
+		default:
+			fmt.Println("No command provided")
 	}
 
 	if err != nil {

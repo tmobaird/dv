@@ -140,6 +140,73 @@ func TestDelete(t *testing.T) {
 	})
 }
 
+func TestDone(t *testing.T) {
+	t.Run("marks todo as done", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}, {Name: "World", CreatedAt: "dummy", Id: uuid.New()}}}
+
+		todos, _ := done(todoUuid.String(), rw)
+		got := todos[0].Done
+		want := true
+
+
+		if got != want {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
+
+	t.Run("returns error when fails to read file", func(t *testing.T) {
+		rw := &ErrorMockReader{}
+
+		_, gotError := done(uuid.New().String(), rw)
+		wantErrorMessage := "Failed to read file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+
+	t.Run("returns error when fails to write file", func(t *testing.T) {
+		rw := &ErrorMockWriter{}
+
+		_, gotError := done(uuid.New().String(), rw)
+		wantErrorMessage := "Failed to write file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+}
+
+func TestUndo(t *testing.T) {
+	t.Run("marks todo as not done", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid, Done: true}}}
+
+		todos, _ := undo(todoUuid.String(), rw)
+		got := todos[0].Done
+		want := false
+
+		if got != want {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
+
+	t.Run("returns error when fails to read file", func(t *testing.T) {
+		rw := &ErrorMockReader{}
+
+		_, gotError := undo(uuid.New().String(), rw)
+		wantErrorMessage := "Failed to read file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+
+	t.Run("returns error when fails to write file", func(t *testing.T) {
+		rw := &ErrorMockWriter{}
+
+		_, gotError := undo(uuid.New().String(), rw)
+		wantErrorMessage := "Failed to write file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+}
+
 func assertCorrectError(t testing.TB, got error, want string) {
 	t.Helper()
 	if got.Error() != want {

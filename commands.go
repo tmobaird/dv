@@ -67,3 +67,53 @@ func delete(uid string, r ReaderWriter) ([]Todo, error) {
 
 	return newTodos, nil
 }
+
+func done(uid string, r ReaderWriter) ([]Todo, error) {
+	todos, err := r.ReadJSONFileToMap()
+	if err != nil {
+		todos = []Todo{}
+		return todos, err
+	}
+
+	var newTodos []Todo
+	for _, todo := range todos {
+		if todo.Id.String() == uid {
+			todo.Done = true
+		}
+		newTodos = append(newTodos, todo)
+	}
+
+	writeErr := r.WriteTodosToFile(newTodos)
+	if writeErr != nil {
+		todos = []Todo{}
+		return todos, writeErr
+	}
+
+	return newTodos, nil
+}
+
+func undo(uid string, r ReaderWriter) ([]Todo, error) {
+	todos, err := r.ReadJSONFileToMap()
+
+	if err != nil {
+		todos = []Todo{}
+		return todos, err
+	}
+
+	var newTodos []Todo
+	for _, todo := range todos {
+		if todo.Id.String() == uid {
+			todo.Done = false
+		}
+		newTodos = append(newTodos, todo)
+	}
+
+	writeErr := r.WriteTodosToFile(newTodos)
+
+	if writeErr != nil {
+		todos = []Todo{}
+		return todos, writeErr
+	}
+
+	return newTodos, nil
+}

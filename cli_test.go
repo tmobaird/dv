@@ -119,4 +119,50 @@ func TestRun(t *testing.T) {
 			t.Errorf("Expected %d, got %d", wantCount, count)
 		}
 	})
+
+	t.Run("calls done command", func(t *testing.T) {
+		count := 0
+		wantCount := 1
+		mockDone := func(_ string, r ReaderWriter) ([]Todo, error) {
+			todos := []Todo{}
+			count += 1
+			return todos, nil
+		}
+		commander := Commander{Done: mockDone, ReaderWriter: &RealReaderWriter{}}
+
+		cli := Cli{
+			Command:   "done",
+			Args: 	[]string{"123"},
+			Commander: commander,
+		}
+
+		cli.Run()
+
+		if count != wantCount {
+			t.Errorf("Expected %d, got %d", wantCount, count)
+		}
+	})
+
+	t.Run("calls undo command", func(t *testing.T) {
+		count := 0
+		wantCount := 1
+		mockUndo := func(_ string, r ReaderWriter) ([]Todo, error) {
+			todos := []Todo{}
+			count += 1
+			return todos, nil
+		}
+		commander := Commander{Undo: mockUndo, ReaderWriter: &RealReaderWriter{}}
+
+		cli := Cli{
+			Command:   "undo",
+			Args: 	[]string{"123"},
+			Commander: commander,
+		}
+
+		cli.Run()
+
+		if count != wantCount {
+			t.Errorf("Expected %d, got %d", wantCount, count)
+		}
+	})
 }
