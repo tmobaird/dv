@@ -14,8 +14,20 @@ func TestReportTodos(t *testing.T) {
 			{Name: "World", CreatedAt: "dummy", Id: uuid.New()},
 		}
 
-		got := ReportTodos(todos)
+		got := ReportTodos(todos, false)
 		want := "- Hello\n- World\n"
+
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("shows todo id when verbose", func(t *testing.T) {
+		todoId := uuid.New()
+		todos := []Todo{
+			{Name: "Hello", CreatedAt: "dummy", Id: todoId},
+		}
+
+		got := ReportTodos(todos, true)
+		want := "- Hello (" + todos[0].Id.String() + ")\n"
 
 		assertCorrectMessage(t, got, want)
 	})

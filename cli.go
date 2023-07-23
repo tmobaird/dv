@@ -1,11 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type Cli struct {
 	Command string
 	Args []string
 	Commander Commander
+	Verbose bool
 }
 
 func (c Cli) Run() {
@@ -24,6 +27,6 @@ func (c Cli) Run() {
 	if err != nil {
 		fmt.Printf(ReportError(err, c.Command))
 	} else {
-		fmt.Print(ReportTodos(todos))
+		fmt.Print(ReportTodos(todos, c.Verbose))
 	}
 }

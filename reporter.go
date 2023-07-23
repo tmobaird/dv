@@ -2,11 +2,16 @@ package main
 
 import "fmt"
 
-func ReportTodos (todos []Todo) string {
+func ReportTodos (todos []Todo, verbose bool) string {
 	var output string
 
 	for _, todo := range todos {
-		output += "- " + todo.Name + "\n"
+		output += "- " + todo.Name
+
+		if verbose {
+			output += " (" + todo.Id.String() + ")"
+		}
+		output += "\n"
 	}
 
 	return output
