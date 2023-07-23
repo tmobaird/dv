@@ -16,3 +16,4 @@
 - [ ] Perform actions on todos by index or uuid
 - Persistent configurations
     - [ ] Dont show completed by default
+    - [ ] Todo groups

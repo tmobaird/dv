@@ -15,7 +15,7 @@ func helpIfNecessary(args []string) {
 	}
 
 	if help {
-		fmt.Println("Usage: todo-cli [options] [command] [arguments]")
+		fmt.Println("Usage: td [options] [command] [arguments]")
 		fmt.Println("Options:")
 		fmt.Println("  -h, --help     Print usage")
 		fmt.Println("  -v, --verbose  Print verbose output")
