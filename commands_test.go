@@ -113,18 +113,29 @@ func TestDelete(t *testing.T) {
 		todoUuid := uuid.New()
 		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}, {Name: "World", CreatedAt: "dummy", Id: uuid.New()}}}
 
-		got, _ := delete(todoUuid.String(), rw)
+		got, _ := delete([]string{todoUuid.String()}, rw)
 		want := 1
 
-		if len(got) != want {
-			t.Errorf("got %v of len %d want %v", got, len(got), want)
-		}
+		assertLength(t, got, want)
+	})
+
+	t.Run("deletes multiple todos from list", func(t *testing.T) {
+		todoUuid := uuid.New()
+		todoUuidTwo := uuid.New()
+		todoOne := Todo{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}
+		todoTwo := Todo{Name: "World", CreatedAt: "dummy", Id: todoUuidTwo}
+		rw := &MockReaderWriter{todos: []Todo{todoOne, todoTwo}}
+
+		got, _ := delete([]string{todoUuid.String(), todoUuidTwo.String()}, rw)
+		want := 0
+
+		assertLength(t, got, want)
 	})
 
 	t.Run("returns error when fails to read file", func(t *testing.T) {
 		rw := &ErrorMockReader{}
 
-		_, gotError := delete(uuid.New().String(), rw)
+		_, gotError := delete([]string{uuid.New().String()}, rw)
 		wantErrorMessage := "Failed to read file"
 
 		assertCorrectError(t, gotError, wantErrorMessage)
@@ -133,7 +144,7 @@ func TestDelete(t *testing.T) {
 	t.Run("returns error when fails to write file", func(t *testing.T) {
 		rw := &ErrorMockWriter{}
 
-		_, gotError := delete(uuid.New().String(), rw)
+		_, gotError := delete([]string{uuid.New().String()}, rw)
 		wantErrorMessage := "Failed to write file"
 
 		assertCorrectError(t, gotError, wantErrorMessage)
@@ -246,5 +257,12 @@ func assertCorrectError(t testing.TB, got error, want string) {
 	t.Helper()
 	if got.Error() != want {
 		t.Errorf("got \"%s\" want \"%s\"", got, want)
+	}
+}
+
+func assertLength(t testing.TB, got []Todo, want int) {
+	t.Helper()
+	if len(got) != want {
+		t.Errorf("got %v of len %d want %v", got, len(got), want)
 	}
 }

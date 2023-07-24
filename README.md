@@ -11,7 +11,7 @@
 - [x] Support marking as completed
 - [x] Support marking as not completed
 - [x] Support editing of todos
-- [ ] Support batch delete todos
+- [x] Support batch delete todos
 - [ ] Support batch add todos
 - [ ] Perform actions on todos by index or uuid (edit, delete, done, undo)
 - [ ] Command shorthands (a for add, l for list, d for delete)

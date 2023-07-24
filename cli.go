@@ -19,7 +19,7 @@ func (c Cli) Run() {
 		case "list":
 			todos, err = c.Commander.List(c.Commander.ReaderWriter)
 		case "delete":
-			todos, err = c.Commander.Delete(c.Args[0], c.Commander.ReaderWriter)
+			todos, err = c.Commander.Delete(c.Args[0:], c.Commander.ReaderWriter)
 		case "add":
 			todos, err = c.Commander.Add(c.Args, c.Commander.ReaderWriter)
 		case "done":

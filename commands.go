@@ -6,6 +6,16 @@ import (
 	"github.com/google/uuid"
 )
 
+func isInArray(target string, arr []string) bool {
+    for _, item := range arr {
+        if item == target {
+            return true
+        }
+    }
+    return false
+}
+
+
 func add(args []string, r ReaderWriter) ([]Todo, error) {
 	// deserialize data
 	todos, err := r.ReadJSONFileToMap()
@@ -43,7 +53,7 @@ func list(r ReaderWriter) ([]Todo, error) {
 	return todos, nil
 }
 
-func delete(uid string, r ReaderWriter) ([]Todo, error) {
+func delete(uids []string, r ReaderWriter) ([]Todo, error) {
 	todos, err := r.ReadJSONFileToMap()
 
 	if err != nil {
@@ -53,7 +63,7 @@ func delete(uid string, r ReaderWriter) ([]Todo, error) {
 
 	var newTodos []Todo
 	for _, todo := range todos {
-		if todo.Id.String() != uid {
+		if !isInArray(todo.Id.String(), uids) {
 			newTodos = append(newTodos, todo)
 		}
 	}

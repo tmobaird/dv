@@ -100,7 +100,7 @@ func TestRun(t *testing.T) {
 	t.Run("calls delete command", func(t *testing.T) {
 		count := 0
 		wantCount := 1
-		mockDelete := func(_ string, r ReaderWriter) ([]Todo, error) {
+		mockDelete := func(_ []string, r ReaderWriter) ([]Todo, error) {
 			todos := []Todo{}
 			count += 1
 			return todos, nil
