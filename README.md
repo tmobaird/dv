@@ -10,10 +10,11 @@
     - [ ] Test flags interface
 - [x] Support marking as completed
 - [x] Support marking as not completed
-- [ ] Support editing of todos
-- [ ] Support batch remove todos
+- [x] Support editing of todos
+- [ ] Support batch delete todos
 - [ ] Support batch add todos
-- [ ] Perform actions on todos by index or uuid
+- [ ] Perform actions on todos by index or uuid (edit, delete, done, undo)
+- [ ] Command shorthands (a for add, l for list, d for delete)
 - Persistent configurations
     - [ ] Dont show completed by default
     - [ ] Todo groups

@@ -15,17 +15,19 @@ func (c Cli) Run() {
 	var todos []Todo
 	var err error
 
-	switch {
-		case c.Command == "list":
+	switch c.Command {
+		case "list":
 			todos, err = c.Commander.List(c.Commander.ReaderWriter)
-		case c.Command == "delete":
+		case "delete":
 			todos, err = c.Commander.Delete(c.Args[0], c.Commander.ReaderWriter)
-		case c.Command == "add":
+		case "add":
 			todos, err = c.Commander.Add(c.Args, c.Commander.ReaderWriter)
-		case c.Command == "done":
+		case "done":
 			todos, err = c.Commander.Done(c.Args[0], c.Commander.ReaderWriter)
-		case c.Command == "undo":
+		case "undo":
 			todos, err = c.Commander.Undo(c.Args[0], c.Commander.ReaderWriter)
+		case "edit":
+			todos, err = c.Commander.Edit(c.Args[0], c.Args[1], c.Commander.ReaderWriter)
 		default:
 			fmt.Println("No command provided")
 	}

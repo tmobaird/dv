@@ -207,6 +207,41 @@ func TestUndo(t *testing.T) {
 	})
 }
 
+func TestEdit(t *testing.T) {
+	t.Run("edits name of todo", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}}}
+		newName := "new name"
+
+		todos, _ := edit(todoUuid.String(), newName, rw)
+		got := todos[0].Name
+		want := newName
+
+
+		if got != want {
+			t.Errorf("got %s want %s", got, want)
+		}
+	})
+
+	t.Run("returns error when fails to read file", func(t *testing.T) {
+		rw := &ErrorMockReader{}
+
+		_, gotError := edit(uuid.New().String(), "new name", rw)
+		wantErrorMessage := "Failed to read file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+
+	t.Run("returns error when fails to write file", func(t *testing.T) {
+		rw := &ErrorMockWriter{}
+
+		_, gotError := edit(uuid.New().String(), "new name", rw)
+		wantErrorMessage := "Failed to write file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+}
+
 func assertCorrectError(t testing.TB, got error, want string) {
 	t.Helper()
 	if got.Error() != want {

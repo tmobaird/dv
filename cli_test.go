@@ -165,4 +165,27 @@ func TestRun(t *testing.T) {
 			t.Errorf("Expected %d, got %d", wantCount, count)
 		}
 	})
+
+	t.Run("calls edit command", func(t *testing.T) {
+		count := 0
+		wantCount := 1
+		mockEdit := func(_, _b string, r ReaderWriter) ([]Todo, error) {
+			todos := []Todo{}
+			count += 1
+			return todos, nil
+		}
+		commander := Commander{Edit: mockEdit, ReaderWriter: &RealReaderWriter{}}
+
+		cli := Cli{
+			Command:   "edit",
+			Args: 	[]string{"123", "new name"},
+			Commander: commander,
+		}
+
+		cli.Run()
+
+		if count != wantCount {
+			t.Errorf("Expected %d, got %d", wantCount, count)
+		}
+	})
 }
