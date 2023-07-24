@@ -20,12 +20,12 @@ func helpIfNecessary(args []string) {
 		fmt.Println("  -h, --help     Print usage")
 		fmt.Println("  -v, --verbose  Print verbose output")
 		fmt.Println("Commands:")
-		fmt.Println("  add <name>              Add a new todo")
-		fmt.Println("  list                    List all todos")
-		fmt.Println("  delete <uuid>           Delete a todo")
-		fmt.Println("  done <uuid>             Mark a todo as done")
-		fmt.Println("  undo <uuid>             gMark a todo as not done")
-		fmt.Println("  edit <uuid> <new name>  Edit a todo")
+		fmt.Println("  a,  add <name>              Add a new todo")
+		fmt.Println("  ls, list                   List all todos")
+		fmt.Println("  d,  delete <uuid>           Delete a todo")
+		fmt.Println("  do, done <uuid>            Mark a todo as done")
+		fmt.Println("  un, undo <uuid>            Mark a todo as not done")
+		fmt.Println("  e,  edit <uuid> <new name>  Edit a todo")
 		os.Exit(0)
 	}
 }

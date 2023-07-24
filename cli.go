@@ -16,17 +16,17 @@ func (c Cli) Run() {
 	var err error
 
 	switch c.Command {
-		case "list":
+		case "list", "ls":
 			todos, err = c.Commander.List(c.Commander.ReaderWriter)
-		case "delete":
+		case "delete", "d":
 			todos, err = c.Commander.Delete(c.Args[0:], c.Commander.ReaderWriter)
-		case "add":
+		case "add", "a":
 			todos, err = c.Commander.Add(c.Args, c.Commander.ReaderWriter)
-		case "done":
+		case "done", "do":
 			todos, err = c.Commander.Done(c.Args[0], c.Commander.ReaderWriter)
-		case "undo":
+		case "undo", "un":
 			todos, err = c.Commander.Undo(c.Args[0], c.Commander.ReaderWriter)
-		case "edit":
+		case "edit", "e":
 			todos, err = c.Commander.Edit(c.Args[0], c.Args[1], c.Commander.ReaderWriter)
 		default:
 			fmt.Println("No command provided")

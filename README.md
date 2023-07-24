@@ -14,7 +14,8 @@
 - [x] Support batch delete todos
 - [ ] Support batch add todos
 - [ ] Perform actions on todos by index or uuid (edit, delete, done, undo)
-- [ ] Command shorthands (a for add, l for list, d for delete)
+- [x] Command shorthands (a for add, l for list, d for delete)
+- [ ] Prioritize items in list
 - Persistent configurations
     - [ ] Dont show completed by default
     - [ ] Todo groups
