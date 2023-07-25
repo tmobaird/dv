@@ -52,6 +52,20 @@ func TestAdd(t *testing.T) {
 		}
 	})
 
+	t.Run("adds and returns multiple todos at once", func(t *testing.T) {
+		todosGot, _ := add([]string{"Hello", "World"}, &MockReaderWriter{})
+		todosWant := []Todo{
+			{Name: "Hello", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "World", CreatedAt: "dummy", Id: uuid.New()},
+		}
+		got := len(todosGot)
+		want := len(todosWant)
+
+		if got != want {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
+
 	t.Run("writes todos to file", func(t *testing.T) {
 		rw := &MockReaderWriter{}
 		add([]string{"Hello"}, rw)

@@ -25,14 +25,15 @@ func add(args []string, r ReaderWriter) ([]Todo, error) {
 		return todos, err
 	}
 
-	// add todo to list
-	newTodo := Todo{
-		Id:        uuid.New(),
-		Name:      args[0],
-		CreatedAt: time.Now().String(),
+	for _, arg := range args {
+		newTodo := Todo{
+			Id:        uuid.New(),
+			Name:      arg,
+			CreatedAt: time.Now().String(),
+		}
+		todos = append(todos, newTodo)
 	}
 
-	todos = append(todos, newTodo)
 	writeErr := r.WriteTodosToFile(todos)
 	if writeErr != nil {
 		todos = []Todo{}
