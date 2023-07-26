@@ -146,6 +146,15 @@ func TestDelete(t *testing.T) {
 		assertLength(t, got, want)
 	})
 
+	t.Run("can delete by index", func(t *testing.T) {
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: uuid.New()}}}
+
+		got, _ := delete([]string{"1"}, rw)
+		want := 0
+
+		assertLength(t, got, want)
+	})
+
 	t.Run("returns error when fails to read file", func(t *testing.T) {
 		rw := &ErrorMockReader{}
 

@@ -2,10 +2,11 @@ package main
 
 import "fmt"
 
-func ReportTodos (todos []Todo, verbose bool) string {
+func ReportTodos(todos []Todo, verbose bool) string {
 	var output string
 
-	for _, todo := range todos {
+	for index, todo := range todos {
+		output += fmt.Sprintf("%d. ", index+1)
 		if todo.Done {
 			output += "[✓] "
 		} else {
@@ -22,6 +23,6 @@ func ReportTodos (todos []Todo, verbose bool) string {
 	return output
 }
 
-func ReportError (error error, command string) string {
+func ReportError(error error, command string) string {
 	return fmt.Sprintf("ERROR - Failed to execute %s\n- %s\n", command, error.Error())
 }

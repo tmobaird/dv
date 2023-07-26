@@ -15,7 +15,7 @@ func TestReportTodos(t *testing.T) {
 		}
 
 		got := ReportTodos(todos, false)
-		want := "[ ] Hello\n[✓] World\n"
+		want := "1. [ ] Hello\n2. [✓] World\n"
 
 		assertCorrectMessage(t, got, want)
 	})
@@ -27,7 +27,7 @@ func TestReportTodos(t *testing.T) {
 		}
 
 		got := ReportTodos(todos, true)
-		want := "[ ] Hello (" + todos[0].Id.String() + ")\n"
+		want := "1. [ ] Hello (" + todos[0].Id.String() + ")\n"
 
 		assertCorrectMessage(t, got, want)
 	})

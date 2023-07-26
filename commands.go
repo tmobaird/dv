@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -63,8 +64,9 @@ func delete(uids []string, r ReaderWriter) ([]Todo, error) {
 	}
 
 	var newTodos []Todo
-	for _, todo := range todos {
-		if !isInArray(todo.Id.String(), uids) {
+	for index, todo := range todos {
+		todoIndex := strconv.Itoa(index + 1)
+		if !isInArray(todo.Id.String(), uids) && !isInArray(todoIndex, uids) {
 			newTodos = append(newTodos, todo)
 		}
 	}
