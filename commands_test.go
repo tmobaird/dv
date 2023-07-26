@@ -175,13 +175,6 @@ func TestDelete(t *testing.T) {
 }
 
 func TestDone(t *testing.T) {
-	assertDone := func(t testing.TB, got Todo, want bool) {
-		t.Helper()
-		if got.Done != want {
-			t.Errorf("got %v want %v", got.Done, want)
-		}
-	}
-
 	t.Run("marks todo as done", func(t *testing.T) {
 		todoUuid := uuid.New()
 		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}, {Name: "World", CreatedAt: "dummy", Id: uuid.New()}}}
@@ -229,12 +222,20 @@ func TestUndo(t *testing.T) {
 		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid, Done: true}}}
 
 		todos, _ := undo(todoUuid.String(), rw)
-		got := todos[0].Done
+		got := todos[0]
 		want := false
 
-		if got != want {
-			t.Errorf("got %v want %v", got, want)
-		}
+		assertDone(t, got, want)
+	})
+
+	t.Run("marks todo as not done by index", func(t *testing.T) {
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: uuid.New(), Done: true}}}
+
+		todos, _ := undo("1", rw)
+		got := todos[0]
+		want := false
+
+		assertDone(t, got, want)
 	})
 
 	t.Run("returns error when fails to read file", func(t *testing.T) {
@@ -319,5 +320,12 @@ func assertLength(t testing.TB, got []Todo, want int) {
 	t.Helper()
 	if len(got) != want {
 		t.Errorf("got %v of len %d want %v", got, len(got), want)
+	}
+}
+
+func assertDone(t testing.TB, got Todo, want bool) {
+	t.Helper()
+	if got.Done != want {
+		t.Errorf("got %v want %v", got.Done, want)
 	}
 }

@@ -13,11 +13,11 @@
 - [x] Support editing of todos
 - [x] Support batch delete todos
 - [x] Support batch add todos
-- [ ] Perform actions on todos by index or uuid (edit, delete, done, undo)
+- [x] Perform actions on todos by index or uuid (edit, delete, done, undo)
     - [x] delete
     - [x] edit
     - [x] done
-    - [ ] undo
+    - [x] undo
 - [x] Command shorthands (a for add, l for list, d for delete)
 - [ ] Prioritize items in list
 - [ ] Change persistence directory to ~/.td
