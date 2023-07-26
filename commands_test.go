@@ -20,7 +20,9 @@ func (m *MockReaderWriter) WriteTodosToFile(todos []Todo) error {
 	return nil
 }
 
-type ErrorMockReader struct{}
+type ErrorMockReader struct{
+	todos []Todo
+}
 
 func (m *ErrorMockReader) ReadJSONFileToMap() ([]Todo, error) {
 	return nil, errors.New("Failed to read file")
@@ -30,10 +32,12 @@ func (m *ErrorMockReader) WriteTodosToFile(todos []Todo) error {
 	return nil
 }
 
-type ErrorMockWriter struct{}
+type ErrorMockWriter struct{
+	todos []Todo
+}
 
 func (m *ErrorMockWriter) ReadJSONFileToMap() ([]Todo, error) {
-	return []Todo{}, nil
+	return m.todos, nil
 }
 
 func (m *ErrorMockWriter) WriteTodosToFile(todos []Todo) error {
@@ -183,7 +187,6 @@ func TestDone(t *testing.T) {
 		got := todos[0]
 		want := true
 
-
 		assertDone(t, got, want)
 	})
 
@@ -274,7 +277,6 @@ func TestEdit(t *testing.T) {
 		got := todos[0].Name
 		want := newName
 
-
 		assertString(t, got, want)
 	})
 
@@ -285,7 +287,6 @@ func TestEdit(t *testing.T) {
 		todos, _ := edit("1", newName, rw)
 		got := todos[0].Name
 		want := newName
-
 
 		assertString(t, got, want)
 	})
@@ -307,6 +308,131 @@ func TestEdit(t *testing.T) {
 
 		assertCorrectError(t, gotError, wantErrorMessage)
 	})
+}
+
+func TestRank(t *testing.T) {
+	t.Run("ranks todo", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		newRank := "2"
+
+		todos, _ := rank(todoUuid.String(), newRank, rw)
+
+		assertEquals(t, todos[1].Id, todoUuid)
+		assertLength(t, todos, 3)
+	})
+
+	t.Run("ranks index first when position is 1", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Second", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		newRank := "1"
+
+		todos, _ := rank(todoUuid.String(), newRank, rw)
+
+		assertEquals(t, todos[0].Id, todoUuid)
+	})
+
+	t.Run("ranks index last when position is last", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		newRank := "3"
+
+		todos, _ := rank(todoUuid.String(), newRank, rw)
+
+		assertEquals(t, todos[2].Id, todoUuid)
+	})
+
+	t.Run("does not change order when uid is not found", func(t *testing.T) {
+		rw := &MockReaderWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		newRank := "3"
+
+		todos, _ := rank(uuid.New().String(), newRank, rw)
+
+		for index, todo := range todos {
+			if todo.Id.String() != rw.todos[index].Id.String() {
+				t.Errorf("got %v want %v", todo.Id, rw.todos[index].Id)
+			}
+		}
+	})
+
+	t.Run("returns error when position is out of range", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		newRank := "4"
+
+		_, err := rank(todoUuid.String(), newRank, rw)
+
+		assertCorrectError(t, err, "Position is out of range")
+	})
+
+	t.Run("returns error when position is not a number", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &MockReaderWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		newRank := "jfdslkajfdskl"
+
+		_, err := rank(todoUuid.String(), newRank, rw)
+
+		assertCorrectError(t, err, "strconv.Atoi: parsing \"jfdslkajfdskl\": invalid syntax")
+	})
+
+	t.Run("returns error when fails to read file", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &ErrorMockReader{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+		
+		_, gotError := rank(todoUuid.String(), "2", rw)
+		wantErrorMessage := "Failed to read file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+
+	t.Run("returns error when fails to write file", func(t *testing.T) {
+		todoUuid := uuid.New()
+		rw := &ErrorMockWriter{todos: []Todo{
+			{Name: "First", CreatedAt: "dummy", Id: todoUuid},
+			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
+			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
+		}}
+
+		_, gotError := rank(todoUuid.String(), "1", rw)
+		wantErrorMessage := "Failed to write file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+}
+
+func assertEquals(t testing.TB, got, want interface{}) {
+	t.Helper()
+	if got != want {
+		t.Errorf("got \"%v\" want \"%v\"", got, want)
+	}
 }
 
 func assertCorrectError(t testing.TB, got error, want string) {

@@ -17,6 +17,7 @@ func help() {
 	fmt.Println("  do, done   <index|uuid>             Mark a todo as done")
 	fmt.Println("  un, undo   <index|uuid>             Mark a todo as not done")
 	fmt.Println("  e,  edit   <index|uuid> <new name>  Edit a todo")
+	fmt.Println("  r,  rank   <index|uuid> <new rank>  Rerank a todo")
 	os.Exit(0)
 }
 
@@ -48,7 +49,16 @@ func main() {
 
 	if len(args) > 0 {
 		cmd := args[0]
-		commander := Commander{Add: add, List: list, Delete: delete, Done: done, Undo: undo, Edit: edit, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{
+			Add:          add,
+			List:         list,
+			Delete:       delete,
+			Done:         done,
+			Undo:         undo,
+			Edit:         edit,
+			Rank:         rank,
+			ReaderWriter: &RealReaderWriter{},
+		}
 		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose}
 		cli.Run()
 	} else {

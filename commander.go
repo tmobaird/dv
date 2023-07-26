@@ -7,6 +7,7 @@ type Commander struct {
 	Done func(uid string, r ReaderWriter) ([]Todo, error)
 	Undo func(uid string, r ReaderWriter) ([]Todo, error)
 	Edit func(uid, newName string, r ReaderWriter) ([]Todo, error)
+	Rank func(uid, newRank string, r ReaderWriter) ([]Todo, error)
 
 	ReaderWriter ReaderWriter
 }

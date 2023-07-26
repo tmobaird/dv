@@ -301,6 +301,48 @@ func TestRun(t *testing.T) {
 
 		assertCalls(t, count, wantCount)
 	})
+
+	t.Run("calls rank command", func(t *testing.T) {
+		count := 0
+		wantCount := 1
+		mockRank := func(_, _b string, r ReaderWriter) ([]Todo, error) {
+			todos := []Todo{}
+			count += 1
+			return todos, nil
+		}
+		commander := Commander{Rank: mockRank, ReaderWriter: &RealReaderWriter{}}
+
+		cli := Cli{
+			Command:   "rank",
+			Args: 	[]string{"123", "1"},
+			Commander: commander,
+		}
+
+		cli.Run()
+
+		assertCalls(t, count, wantCount)
+	})
+
+	t.Run("calls rank command with r", func(t *testing.T) {
+		count := 0
+		wantCount := 1
+		mockRank := func(_, _b string, r ReaderWriter) ([]Todo, error) {
+			todos := []Todo{}
+			count += 1
+			return todos, nil
+		}
+		commander := Commander{Rank: mockRank, ReaderWriter: &RealReaderWriter{}}
+
+		cli := Cli{
+			Command:   "r",
+			Args: 	[]string{"123", "1"},
+			Commander: commander,
+		}
+
+		cli.Run()
+
+		assertCalls(t, count, wantCount)
+	})
 }
 
 

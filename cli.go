@@ -28,6 +28,8 @@ func (c Cli) Run() {
 			todos, err = c.Commander.Undo(c.Args[0], c.Commander.ReaderWriter)
 		case "edit", "e":
 			todos, err = c.Commander.Edit(c.Args[0], c.Args[1], c.Commander.ReaderWriter)
+		case "rank", "r":
+			todos, err = c.Commander.Rank(c.Args[0], c.Args[1], c.Commander.ReaderWriter)
 		default:
 			fmt.Println("No command provided")
 	}

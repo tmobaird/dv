@@ -19,7 +19,8 @@
     - [x] done
     - [x] undo
 - [x] Command shorthands (a for add, l for list, d for delete)
-- [ ] Prioritize items in list
+- [x] Prioritize items in list
+- [ ] Catch errors when not enough inputs for command
 - [ ] Change persistence directory to ~/.td
 - Persistent configurations
     - [ ] Dont show completed by default
