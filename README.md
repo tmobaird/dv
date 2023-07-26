@@ -16,7 +16,7 @@
 - [ ] Perform actions on todos by index or uuid (edit, delete, done, undo)
     - [x] delete
     - [x] edit
-    - [ ] done
+    - [x] done
     - [ ] undo
 - [x] Command shorthands (a for add, l for list, d for delete)
 - [ ] Prioritize items in list

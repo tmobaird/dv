@@ -175,18 +175,33 @@ func TestDelete(t *testing.T) {
 }
 
 func TestDone(t *testing.T) {
+	assertDone := func(t testing.TB, got Todo, want bool) {
+		t.Helper()
+		if got.Done != want {
+			t.Errorf("got %v want %v", got.Done, want)
+		}
+	}
+
 	t.Run("marks todo as done", func(t *testing.T) {
 		todoUuid := uuid.New()
 		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}, {Name: "World", CreatedAt: "dummy", Id: uuid.New()}}}
 
 		todos, _ := done(todoUuid.String(), rw)
-		got := todos[0].Done
+		got := todos[0]
 		want := true
 
 
-		if got != want {
-			t.Errorf("got %v want %v", got, want)
-		}
+		assertDone(t, got, want)
+	})
+
+	t.Run("marks todo as done by index", func(t *testing.T) {
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: uuid.New(), Done: false}}}
+
+		todos, _ := done("1", rw)
+		got := todos[0]
+		want := true
+
+		assertDone(t, got, want)
 	})
 
 	t.Run("returns error when fails to read file", func(t *testing.T) {
