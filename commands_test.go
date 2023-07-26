@@ -242,6 +242,13 @@ func TestUndo(t *testing.T) {
 }
 
 func TestEdit(t *testing.T) {
+	assertString := func(t testing.TB, got, want string) {
+		t.Helper()
+		if got != want {
+			t.Errorf("got \"%s\" want \"%s\"", got, want)
+		}
+	}
+
 	t.Run("edits name of todo", func(t *testing.T) {
 		todoUuid := uuid.New()
 		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: todoUuid}}}
@@ -252,9 +259,19 @@ func TestEdit(t *testing.T) {
 		want := newName
 
 
-		if got != want {
-			t.Errorf("got %s want %s", got, want)
-		}
+		assertString(t, got, want)
+	})
+
+	t.Run("edits name of todo by index", func(t *testing.T) {
+		rw := &MockReaderWriter{todos: []Todo{{Name: "Hello", CreatedAt: "dummy", Id: uuid.New()}}}
+		newName := "new name"
+
+		todos, _ := edit("1", newName, rw)
+		got := todos[0].Name
+		want := newName
+
+
+		assertString(t, got, want)
 	})
 
 	t.Run("returns error when fails to read file", func(t *testing.T) {

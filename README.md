@@ -15,7 +15,7 @@
 - [x] Support batch add todos
 - [ ] Perform actions on todos by index or uuid (edit, delete, done, undo)
     - [x] delete
-    - [ ] edit
+    - [x] edit
     - [ ] done
     - [ ] undo
 - [x] Command shorthands (a for add, l for list, d for delete)

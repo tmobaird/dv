@@ -140,8 +140,9 @@ func edit(uid, name string, r ReaderWriter) ([]Todo, error) {
 	}
 
 	var newTodos []Todo
-	for _, todo := range todos {
-		if todo.Id.String() == uid {
+	for index, todo := range todos {
+		todoIndex := strconv.Itoa(index + 1)
+		if todo.Id.String() == uid || todoIndex == uid {
 			todo.Name = name
 		}
 		newTodos = append(newTodos, todo)

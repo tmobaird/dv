@@ -5,28 +5,32 @@ import (
 	"os"
 )
 
+func help() {
+	fmt.Println("Usage: td [options] [command] [arguments]")
+	fmt.Println("Options:")
+	fmt.Println("  -h, --help     Print usage")
+	fmt.Println("  -v, --verbose  Print verbose output")
+	fmt.Println("Commands:")
+	fmt.Println("  a,  add <name>                      Add a new todo")
+	fmt.Println("  ls, list                            List all todos")
+	fmt.Println("  d,  delete <index|uuid>             Delete a todo")
+	fmt.Println("  do, done   <index|uuid>             Mark a todo as done")
+	fmt.Println("  un, undo   <index|uuid>             Mark a todo as not done")
+	fmt.Println("  e,  edit   <index|uuid> <new name>  Edit a todo")
+	os.Exit(0)
+}
+
 func helpIfNecessary(args []string) {
-	help := false
+	needHelp := false
 
 	for _, arg := range args {
 		if arg == "-h" || arg == "--help" {
-			help = true
+			needHelp = true
 		}
 	}
 
-	if help {
-		fmt.Println("Usage: td [options] [command] [arguments]")
-		fmt.Println("Options:")
-		fmt.Println("  -h, --help     Print usage")
-		fmt.Println("  -v, --verbose  Print verbose output")
-		fmt.Println("Commands:")
-		fmt.Println("  a,  add <name>              Add a new todo")
-		fmt.Println("  ls, list                   List all todos")
-		fmt.Println("  d,  delete <uuid>           Delete a todo")
-		fmt.Println("  do, done <uuid>            Mark a todo as done")
-		fmt.Println("  un, undo <uuid>            Mark a todo as not done")
-		fmt.Println("  e,  edit <uuid> <new name>  Edit a todo")
-		os.Exit(0)
+	if needHelp {
+		help()
 	}
 }
 
@@ -49,6 +53,6 @@ func main() {
 		cli.Run()
 	} else {
 		fmt.Println("No command provided")
-		fmt.Println("Print Help")
+		help()
 	}
 }
