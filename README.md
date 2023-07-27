@@ -22,6 +22,7 @@
 - [x] Prioritize items in list
 - [ ] Catch errors when not enough inputs for command
 - [x] Change persistence directory to ~/.td
+=== Release Here ===
 - Persistent configurations
     - [ ] Dont show completed by default
     - [ ] Todo groups
