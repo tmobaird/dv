@@ -25,7 +25,8 @@
 
 === Release Here ===
 
-- Persistent configurations
+- [ ] Restructure project directories
+- [ ] Persistent configurations
     - [ ] Dont show completed by default
     - [ ] Todo groups
 - [ ] Subtodos
