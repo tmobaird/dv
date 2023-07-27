@@ -21,7 +21,7 @@
 - [x] Command shorthands (a for add, l for list, d for delete)
 - [x] Prioritize items in list
 - [ ] Catch errors when not enough inputs for command
-- [ ] Change persistence directory to ~/.td
+- [x] Change persistence directory to ~/.td
 - Persistent configurations
     - [ ] Dont show completed by default
     - [ ] Todo groups

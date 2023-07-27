@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -31,7 +32,7 @@ func (c Cli) Run() {
 		case "rank", "r":
 			todos, err = c.Commander.Rank(c.Args[0], c.Args[1], c.Commander.ReaderWriter)
 		default:
-			fmt.Println("No command provided")
+			err = errors.New("No such command")
 	}
 
 	if err != nil {

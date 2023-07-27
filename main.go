@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/user"
 )
 
 func help() {
@@ -35,6 +36,24 @@ func helpIfNecessary(args []string) {
 	}
 }
 
+func getContext() string {
+	currentUser, err := user.Current()
+	if err != nil {
+		fmt.Println("ERROR: ", err)
+		os.Exit(1)
+	}
+	filePath := currentUser.HomeDir + "/" + storageDirectory
+	return filePath
+}
+
+func initializeStorage(commander Commander) {
+	err := commander.ReaderWriter.EnsureTodosFileExists()
+	if err != nil {
+		fmt.Println("Failed to initialize td", err)
+		os.Exit(1)
+	}
+}
+
 func main() {
 	args := os.Args[1:]
 	verbose := false
@@ -50,16 +69,25 @@ func main() {
 	if len(args) > 0 {
 		cmd := args[0]
 		commander := Commander{
-			Add:          add,
-			List:         list,
-			Delete:       delete,
-			Done:         done,
-			Undo:         undo,
-			Edit:         edit,
-			Rank:         rank,
-			ReaderWriter: &RealReaderWriter{},
+			Add:    add,
+			List:   list,
+			Delete: delete,
+			Done:   done,
+			Undo:   undo,
+			Edit:   edit,
+			Rank:   rank,
+			ReaderWriter: &RealReaderWriter{
+				Context:       getContext(),
+				MkdirAllFunc:  os.MkdirAll,
+				StatFunc:      os.Stat,
+				WriteFileFunc: os.WriteFile,
+				ReadFileFunc:  os.ReadFile,
+			},
 		}
 		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose}
+
+		initializeStorage(commander)
+
 		cli.Run()
 	} else {
 		fmt.Println("No command provided")
