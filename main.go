@@ -84,7 +84,7 @@ func main() {
 				ReadFileFunc:  os.ReadFile,
 			},
 		}
-		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose}
+		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose, PrintFunc: fmt.Print}
 
 		initializeStorage(commander)
 

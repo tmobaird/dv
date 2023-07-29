@@ -20,7 +20,7 @@
     - [x] undo
 - [x] Command shorthands (a for add, l for list, d for delete)
 - [x] Prioritize items in list
-- [ ] Catch errors when not enough inputs for command
+- [x] Catch errors when not enough inputs for command
 - [x] Change persistence directory to ~/.td
 
 === Release Here ===
