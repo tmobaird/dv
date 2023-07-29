@@ -2,3 +2,5 @@ todo-cli
 td
 tmp
 coverage.out
+build
+*.tar.gz

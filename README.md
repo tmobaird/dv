@@ -30,3 +30,16 @@
     - [ ] Dont show completed by default
     - [ ] Todo groups
 - [ ] Subtodos
+
+### Installation
+
+Need to verify
+
+```bash
+export DOWNLOAD_URL="github.com/release"
+export BINARIES_PATH="~/bin"
+wget -O /tmp/td "$DOWNLOAD_URL" \
+&& mkdir $BINARIES_PATH \
+&& sudo mv /tmp/td $BINARIES_PATH \
+&& sudo chmod +x "$BINARIES_PATH/td"
+```
