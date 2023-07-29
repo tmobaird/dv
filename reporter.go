@@ -1,12 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func ReportTodos(todos []Todo, verbose bool) string {
 	var output string
 
 	for index, todo := range todos {
-		output += fmt.Sprintf("%d. ", index+1)
+		trailingSpaces := 2
+		if index+1 >= 10 {
+			trailingSpaces = 1
+		}
+		output += fmt.Sprintf("%d.%s", index+1, (strings.Repeat(" ", trailingSpaces)))
 		if todo.Done {
 			output += "[✓] "
 		} else {
