@@ -1,0 +1,16 @@
+#!/bin/bash
+# this script is used to prepare a release for td
+# it will compile the binary,
+# move license, readme, and binary to build directory
+# and create a tar.gz file from the build directory
+#
+go build -o td .
+
+rm -f td.tar.gz
+rm -rf build
+mkdir build
+mv td build/
+cp LICENSE build/
+cp README.md build/
+
+tar -czf td.tar.gz build
