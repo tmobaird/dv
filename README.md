@@ -62,5 +62,5 @@ Commands:
 - [ ] Restructure project directories
 - [ ] Persistent configurations
     - [ ] Dont show completed by default
-    - [ ] Todo groups
+    - [ ] Multiple todo lists
 - [ ] Subtodos
