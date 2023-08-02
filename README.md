@@ -62,5 +62,6 @@ Commands:
 - [ ] Restructure project directories
 - [ ] Persistent configurations
     - [ ] Dont show completed by default
+    - [ ] Switch ranking to be done through UUID so that indexes can be remove completed indexes
     - [ ] Multiple todo lists
 - [ ] Subtodos
