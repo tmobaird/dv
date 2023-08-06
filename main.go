@@ -54,6 +54,20 @@ func initializeStorage(commander Commander) {
 	}
 }
 
+func initializeConfig(commander Commander) (config Config) {
+	err := commander.ReaderWriter.EnsureConfigFileExists()
+	if err != nil {
+		fmt.Println("Failed to initialize td", err)
+		os.Exit(1)
+	}
+	config, err = commander.ReaderWriter.ReadConfigFile()
+	if err != nil {
+		fmt.Println("Failed to initialize td", err)
+		os.Exit(1)
+	}
+	return config
+}
+
 func main() {
 	args := os.Args[1:]
 	verbose := false
@@ -84,10 +98,10 @@ func main() {
 				ReadFileFunc:  os.ReadFile,
 			},
 		}
-		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose, PrintFunc: fmt.Print}
-
 		initializeStorage(commander)
-
+		config := initializeConfig(commander)
+		
+		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose, PrintFunc: fmt.Print, Config: config}
 		cli.Run()
 	} else {
 		fmt.Println("No command provided")

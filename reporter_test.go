@@ -14,7 +14,7 @@ func TestReportTodos(t *testing.T) {
 			{Name: "World", CreatedAt: "dummy", Id: uuid.New(), Done: true},
 		}
 
-		got := ReportTodos(todos, false)
+		got := ReportTodos(todos, false, false)
 		want := "1.  [ ] Hello\n2.  [✓] World\n"
 
 		assertCorrectMessage(t, got, want)
@@ -26,8 +26,29 @@ func TestReportTodos(t *testing.T) {
 			{Name: "Hello", CreatedAt: "dummy", Id: todoId, Done: false},
 		}
 
-		got := ReportTodos(todos, true)
+		got := ReportTodos(todos, true, false)
 		want := "1.  [ ] Hello (" + todos[0].Id.String() + ")\n"
+
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("hides completed todos when hideCompleted is true", func(t *testing.T) {
+		todoId := uuid.New()
+		todos := []Todo{
+			{Name: "Hello", CreatedAt: "dummy", Id: todoId, Done: true},
+		}
+
+		got := ReportTodos(todos, true, true)
+		want := "=== Hidden: 1 completed todos ===\n"
+
+		assertCorrectMessage(t, got, want)
+	})
+
+	t.Run("prints nothing when there are no todos", func(t *testing.T) {
+		todos := []Todo{}
+
+		got := ReportTodos(todos, true, true)
+		want := ""
 
 		assertCorrectMessage(t, got, want)
 	})

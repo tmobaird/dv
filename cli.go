@@ -14,6 +14,7 @@ type Cli struct {
 	Args      []string
 	Commander Commander
 	Verbose   bool
+	Config    Config
 	PrintFunc func(a ...interface{}) (n int, err error)
 }
 
@@ -74,6 +75,6 @@ func (c Cli) Run() {
 	if err != nil {
 		c.PrintFunc(ReportError(err, c.Command))
 	} else {
-		c.PrintFunc(ReportTodos(todos, c.Verbose))
+		c.PrintFunc(ReportTodos(todos, c.Verbose, c.Config.HideCompleted))
 	}
 }

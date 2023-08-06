@@ -4,34 +4,7 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 )
-
-type MockFileInfo struct{}
-
-func (m *MockFileInfo) Name() string {
-    return "MockFile"
-}
-
-func (m *MockFileInfo) Size() int64 {
-    return 0
-}
-
-func (m *MockFileInfo) Mode() os.FileMode {
-    return 0
-}
-
-func (m *MockFileInfo) ModTime() time.Time {
-    return time.Time{}
-}
-
-func (m *MockFileInfo) IsDir() bool {
-    return false
-}
-
-func (m *MockFileInfo) Sys() interface{} {
-    return nil
-}
 
 func TestEnsureTodosFileExists(t *testing.T) {
 	t.Run("creates the .td directory and todos file if it doesn't exist", func(t *testing.T) {
@@ -72,9 +45,9 @@ func TestEnsureTodosFileExists(t *testing.T) {
 				return nil
 			},
 		}
-		
+
 		err := r.EnsureTodosFileExists()
-		
+
 		assertNoError(t, err)
 		assertTodosFileCreated(t, todosCreated, true)
 	})
@@ -162,6 +135,111 @@ func TestWriteMapToJSONFile(t *testing.T) {
 		got := r.WriteTodosToFile([]Todo{})
 
 		assertError(t, got, want)
+	})
+}
+
+func TestEnsureConfigFileExists(t *testing.T) {
+	t.Run("creates the .td directory and config file if it doesn't exist", func(t *testing.T) {
+		tdCreated := false
+		configCreated := false
+		r := &RealReaderWriter{
+			MkdirAllFunc: func(path string, perm os.FileMode) error {
+				tdCreated = true
+				return nil
+			},
+			StatFunc: func(name string) (os.FileInfo, error) {
+				return nil, os.ErrNotExist
+			},
+			WriteFileFunc: func(filename string, data []byte, perm os.FileMode) error {
+				configCreated = true
+				return nil
+			},
+		}
+		err := r.EnsureConfigFileExists()
+
+		assertNoError(t, err)
+
+		assertTdCreated(t, tdCreated, true)
+		assertTodosFileCreated(t, configCreated, true)
+	})
+
+	t.Run("does not create the todos file if it already exists", func(t *testing.T) {
+		configCreated := false
+		r := &RealReaderWriter{
+			MkdirAllFunc: func(path string, perm os.FileMode) error {
+				return nil
+			},
+			StatFunc: func(name string) (os.FileInfo, error) {
+				return &MockFileInfo{}, os.ErrNotExist
+			},
+			WriteFileFunc: func(filename string, data []byte, perm os.FileMode) error {
+				configCreated = true
+				return nil
+			},
+		}
+
+		err := r.EnsureConfigFileExists()
+
+		assertNoError(t, err)
+		assertTodosFileCreated(t, configCreated, true)
+	})
+
+	t.Run("returns error when unable to create .td directory", func(t *testing.T) {
+		r := &RealReaderWriter{
+			MkdirAllFunc: func(path string, perm os.FileMode) error {
+				return errors.New("unable to create .td directory")
+			},
+		}
+
+		err := r.EnsureConfigFileExists()
+
+		if err == nil {
+			t.Errorf("Expected error, got nil")
+		}
+	})
+}
+
+func TestReadConfigFile(t *testing.T) {
+	t.Run("returns config from config.json", func(t *testing.T) {
+		r := &RealReaderWriter{
+			ReadFileFunc: func(filename string) ([]byte, error) {
+				return []byte(`{"hideCompleted":true}`), nil
+			},
+		}
+
+		config, err := r.ReadConfigFile()
+
+		assertNoError(t, err)
+		if config.HideCompleted != true {
+			t.Errorf("Expected hideCompleted to be true, got %v", config.HideCompleted)
+		}
+	})
+
+	t.Run("returns error when read fails", func(t *testing.T) {
+		var want error = errors.New("unable to read file")
+		r := &RealReaderWriter{
+			ReadFileFunc: func(filename string) ([]byte, error) {
+				return nil, want
+			},
+		}
+
+		_, got := r.ReadConfigFile()
+
+		assertError(t, got, want)
+	})
+
+	t.Run("returns error when unmarshalling fails", func(t *testing.T) {
+		r := &RealReaderWriter{
+			ReadFileFunc: func(filename string) ([]byte, error) {
+				return []byte(`[ded]`), nil
+			},
+		}
+
+		_, got := r.ReadConfigFile()
+
+		if got == nil {
+			t.Errorf("Expected error, got nil")
+		}
 	})
 }
 
