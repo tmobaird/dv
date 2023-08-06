@@ -36,7 +36,7 @@ func TestAdd(t *testing.T) {
 		rw := &MockReaderWriter{}
 		add([]string{"Hello"}, rw)
 
-		got, _ := rw.ReadJSONFileToMap()
+		got, _ := rw.ReadTodosFromFile()
 		want := []Todo{
 			{Name: "Hello", CreatedAt: "dummy", Id: uuid.New()},
 		}
@@ -368,7 +368,7 @@ func TestRank(t *testing.T) {
 			{Name: "Second", CreatedAt: "dummy", Id: uuid.New()},
 			{Name: "Third", CreatedAt: "dummy", Id: uuid.New()},
 		}}
-		
+
 		_, gotError := rank(todoUuid.String(), "2", rw)
 		wantErrorMessage := "Failed to read file"
 

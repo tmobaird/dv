@@ -6,13 +6,13 @@ import (
 )
 
 type MockReaderWriter struct {
-	todos []Todo
-	MkdirAllFunc func(path string, perm os.FileMode) error
-	StatFunc func(name string) (os.FileInfo, error)
+	todos         []Todo
+	MkdirAllFunc  func(path string, perm os.FileMode) error
+	StatFunc      func(name string) (os.FileInfo, error)
 	WriteFileFunc func(filename string, data []byte, perm os.FileMode) error
 }
 
-func (m *MockReaderWriter) ReadJSONFileToMap() ([]Todo, error) {
+func (m *MockReaderWriter) ReadTodosFromFile() ([]Todo, error) {
 	return m.todos, nil
 }
 
@@ -29,15 +29,15 @@ func (m *MockReaderWriter) EnsureConfigFileExists() error {
 	return nil
 }
 
-func (m *MockReaderWriter) ReadConfigFile() (Config, error) {
+func (m *MockReaderWriter) ReadConfigFromFile() (Config, error) {
 	return Config{}, nil
 }
 
-type ErrorMockReader struct{
+type ErrorMockReader struct {
 	todos []Todo
 }
 
-func (m *ErrorMockReader) ReadJSONFileToMap() ([]Todo, error) {
+func (m *ErrorMockReader) ReadTodosFromFile() ([]Todo, error) {
 	return nil, errors.New("Failed to read file")
 }
 
@@ -53,15 +53,15 @@ func (m *ErrorMockReader) EnsureConfigFileExists() error {
 	return nil
 }
 
-func (m *ErrorMockReader) ReadConfigFile() (Config, error) {
+func (m *ErrorMockReader) ReadConfigFromFile() (Config, error) {
 	return Config{}, nil
 }
 
-type ErrorMockWriter struct{
+type ErrorMockWriter struct {
 	todos []Todo
 }
 
-func (m *ErrorMockWriter) ReadJSONFileToMap() ([]Todo, error) {
+func (m *ErrorMockWriter) ReadTodosFromFile() ([]Todo, error) {
 	return m.todos, nil
 }
 
@@ -77,6 +77,6 @@ func (m *ErrorMockWriter) EnsureConfigFileExists() error {
 	return nil
 }
 
-func (m *ErrorMockWriter) ReadConfigFile() (Config, error) {
+func (m *ErrorMockWriter) ReadConfigFromFile() (Config, error) {
 	return Config{}, nil
 }

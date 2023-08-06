@@ -60,7 +60,7 @@ func initializeConfig(commander Commander) (config Config) {
 		fmt.Println("Failed to initialize td", err)
 		os.Exit(1)
 	}
-	config, err = commander.ReaderWriter.ReadConfigFile()
+	config, err = commander.ReaderWriter.ReadConfigFromFile()
 	if err != nil {
 		fmt.Println("Failed to initialize td", err)
 		os.Exit(1)
@@ -90,7 +90,7 @@ func main() {
 			Undo:   undo,
 			Edit:   edit,
 			Rank:   rank,
-			ReaderWriter: &RealReaderWriter{
+			ReaderWriter: &TdReaderWriter{
 				Context:       getContext(),
 				MkdirAllFunc:  os.MkdirAll,
 				StatFunc:      os.Stat,
@@ -100,7 +100,7 @@ func main() {
 		}
 		initializeStorage(commander)
 		config := initializeConfig(commander)
-		
+
 		cli := Cli{Command: cmd, Args: args[1:], Commander: commander, Verbose: verbose, PrintFunc: fmt.Print, Config: config}
 		cli.Run()
 	} else {

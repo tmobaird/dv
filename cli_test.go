@@ -16,7 +16,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Add: mockAdd, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "add",
@@ -38,7 +38,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Add: mockAdd, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "a",
@@ -60,7 +60,7 @@ func TestRun(t *testing.T) {
 			gotArgs = args
 			return todos, nil
 		}
-		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Add: mockAdd, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "add",
@@ -83,7 +83,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Add: mockAdd, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Add: mockAdd, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "not-echo",
@@ -105,7 +105,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{List: mockList, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{List: mockList, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "list",
@@ -126,7 +126,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{List: mockList, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{List: mockList, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "ls",
@@ -147,7 +147,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Delete: mockDelete, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Delete: mockDelete, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "delete",
@@ -169,7 +169,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Delete: mockDelete, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Delete: mockDelete, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "d",
@@ -191,7 +191,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Done: mockDone, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Done: mockDone, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "done",
@@ -213,7 +213,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Done: mockDone, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Done: mockDone, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "do",
@@ -235,7 +235,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Done: mockDone, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Done: mockDone, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "done",
@@ -261,7 +261,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Undo: mockUndo, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Undo: mockUndo, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "undo",
@@ -284,7 +284,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Undo: mockUndo, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Undo: mockUndo, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "un",
@@ -307,7 +307,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Undo: mockUndo, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Undo: mockUndo, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "un",
@@ -333,7 +333,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Edit: mockEdit, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Edit: mockEdit, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "edit",
@@ -355,7 +355,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Edit: mockEdit, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Edit: mockEdit, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "e",
@@ -377,7 +377,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Edit: mockEdit, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Edit: mockEdit, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "e",
@@ -403,7 +403,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Rank: mockRank, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Rank: mockRank, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "rank",
@@ -425,7 +425,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Rank: mockRank, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Rank: mockRank, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "r",
@@ -447,7 +447,7 @@ func TestRun(t *testing.T) {
 			count += 1
 			return todos, nil
 		}
-		commander := Commander{Rank: mockRank, ReaderWriter: &RealReaderWriter{}}
+		commander := Commander{Rank: mockRank, ReaderWriter: &TdReaderWriter{}}
 
 		cli := Cli{
 			Command:   "rank",

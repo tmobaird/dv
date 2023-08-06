@@ -10,30 +10,30 @@ var storageFileName string = "todos.json"
 var configFileName string = "config.json"
 
 type ReaderWriter interface {
-	ReadJSONFileToMap() ([]Todo, error)
+	ReadTodosFromFile() ([]Todo, error)
 	WriteTodosToFile([]Todo) error
 	EnsureTodosFileExists() error
 	EnsureConfigFileExists() error
-	ReadConfigFile() (Config, error)
+	ReadConfigFromFile() (Config, error)
 }
 
-type RealReaderWriter struct {
-	Context string
-	MkdirAllFunc func(path string, perm os.FileMode) error
-	StatFunc func(name string) (os.FileInfo, error)
+type TdReaderWriter struct {
+	Context       string
+	MkdirAllFunc  func(path string, perm os.FileMode) error
+	StatFunc      func(name string) (os.FileInfo, error)
 	WriteFileFunc func(filename string, data []byte, perm os.FileMode) error
-	ReadFileFunc func(filename string) ([]byte, error)
+	ReadFileFunc  func(filename string) ([]byte, error)
 }
 
-func (r RealReaderWriter) todosFilePath() string {
+func (r TdReaderWriter) todosFilePath() string {
 	return r.Context + "/" + storageFileName
 }
 
-func (r RealReaderWriter) configFilePath() string {
+func (r TdReaderWriter) configFilePath() string {
 	return r.Context + "/" + configFileName
 }
 
-func (r *RealReaderWriter) EnsureTodosFileExists() error {
+func (r *TdReaderWriter) EnsureTodosFileExists() error {
 	if err := r.MkdirAllFunc(r.Context, 0755); err != nil {
 		return err
 	}
@@ -44,7 +44,7 @@ func (r *RealReaderWriter) EnsureTodosFileExists() error {
 	return nil
 }
 
-func (r *RealReaderWriter) EnsureConfigFileExists() error {
+func (r *TdReaderWriter) EnsureConfigFileExists() error {
 	if err := r.MkdirAllFunc(r.Context, 0755); err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func (r *RealReaderWriter) EnsureConfigFileExists() error {
 	return nil
 }
 
-func (r *RealReaderWriter) ReadJSONFileToMap() ([]Todo, error) {
+func (r *TdReaderWriter) ReadTodosFromFile() ([]Todo, error) {
 	raw, err := r.ReadFileFunc(r.todosFilePath())
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (r *RealReaderWriter) ReadJSONFileToMap() ([]Todo, error) {
 	return data, nil
 }
 
-func (r *RealReaderWriter) WriteTodosToFile(todos []Todo) error {
+func (r *TdReaderWriter) WriteTodosToFile(todos []Todo) error {
 	// serialize data into json
 	jsonData, err := json.MarshalIndent(todos, "", "    ")
 	if err != nil {
@@ -85,7 +85,7 @@ func (r *RealReaderWriter) WriteTodosToFile(todos []Todo) error {
 	return nil
 }
 
-func (r *RealReaderWriter) ReadConfigFile() (Config, error) {
+func (r *TdReaderWriter) ReadConfigFromFile() (Config, error) {
 	raw, err := r.ReadFileFunc(r.configFilePath())
 	if err != nil {
 		return Config{}, err

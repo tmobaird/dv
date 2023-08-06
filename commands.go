@@ -9,45 +9,45 @@ import (
 )
 
 func isInArray(target string, arr []string) bool {
-    for _, item := range arr {
-        if item == target {
-            return true
-        }
-    }
-    return false
+	for _, item := range arr {
+		if item == target {
+			return true
+		}
+	}
+	return false
 }
 
 func moveTodoToPosition(todos []Todo, uid string, position int) []Todo {
 	var currentPosition int
 	for i, obj := range todos {
-        if obj.Id.String() == uid || strconv.Itoa(i + 1) == uid {
-            currentPosition = i
-            break
-        }
-    }
+		if obj.Id.String() == uid || strconv.Itoa(i+1) == uid {
+			currentPosition = i
+			break
+		}
+	}
 
 	if currentPosition == position || currentPosition >= len(todos) {
-        return todos
-    }
+		return todos
+	}
 
 	var newTodos []Todo
 	movedObject := todos[currentPosition]
-    newTodos = append(todos[:currentPosition], todos[currentPosition+1:]...)
+	newTodos = append(todos[:currentPosition], todos[currentPosition+1:]...)
 
 	if position >= len(todos) {
-        // If the newPosition is greater than the length of the array, append the object
-        newTodos = append(todos, movedObject)
-    } else {
-        // Otherwise, insert the object at the newPosition
-        newTodos = append(newTodos[:position], append([]Todo{movedObject}, newTodos[position:]...)...)
-    }
+		// If the newPosition is greater than the length of the array, append the object
+		newTodos = append(todos, movedObject)
+	} else {
+		// Otherwise, insert the object at the newPosition
+		newTodos = append(newTodos[:position], append([]Todo{movedObject}, newTodos[position:]...)...)
+	}
 
-    return newTodos
+	return newTodos
 }
 
 func add(args []string, r ReaderWriter) ([]Todo, error) {
 	// deserialize data
-	todos, err := r.ReadJSONFileToMap()
+	todos, err := r.ReadTodosFromFile()
 
 	if err != nil {
 		todos = []Todo{}
@@ -73,7 +73,7 @@ func add(args []string, r ReaderWriter) ([]Todo, error) {
 }
 
 func list(r ReaderWriter) ([]Todo, error) {
-	todos, err := r.ReadJSONFileToMap()
+	todos, err := r.ReadTodosFromFile()
 
 	if err != nil {
 		todos = []Todo{}
@@ -84,7 +84,7 @@ func list(r ReaderWriter) ([]Todo, error) {
 }
 
 func delete(uids []string, r ReaderWriter) ([]Todo, error) {
-	todos, err := r.ReadJSONFileToMap()
+	todos, err := r.ReadTodosFromFile()
 
 	if err != nil {
 		todos = []Todo{}
@@ -110,7 +110,7 @@ func delete(uids []string, r ReaderWriter) ([]Todo, error) {
 }
 
 func done(uid string, r ReaderWriter) ([]Todo, error) {
-	todos, err := r.ReadJSONFileToMap()
+	todos, err := r.ReadTodosFromFile()
 	if err != nil {
 		todos = []Todo{}
 		return todos, err
@@ -135,7 +135,7 @@ func done(uid string, r ReaderWriter) ([]Todo, error) {
 }
 
 func undo(uid string, r ReaderWriter) ([]Todo, error) {
-	todos, err := r.ReadJSONFileToMap()
+	todos, err := r.ReadTodosFromFile()
 
 	if err != nil {
 		todos = []Todo{}
@@ -162,7 +162,7 @@ func undo(uid string, r ReaderWriter) ([]Todo, error) {
 }
 
 func edit(uid, name string, r ReaderWriter) ([]Todo, error) {
-	todos, err := r.ReadJSONFileToMap()
+	todos, err := r.ReadTodosFromFile()
 
 	if err != nil {
 		todos = []Todo{}
@@ -188,7 +188,7 @@ func edit(uid, name string, r ReaderWriter) ([]Todo, error) {
 }
 
 func rank(uid, rank string, r ReaderWriter) ([]Todo, error) {
-	todos, readErr := r.ReadJSONFileToMap()
+	todos, readErr := r.ReadTodosFromFile()
 
 	if readErr != nil {
 		todos = []Todo{}
@@ -207,7 +207,7 @@ func rank(uid, rank string, r ReaderWriter) ([]Todo, error) {
 		return todos, errors.New("Position is out of range")
 	}
 
-	newTodos := moveTodoToPosition(todos, uid, rankInt - 1)
+	newTodos := moveTodoToPosition(todos, uid, rankInt-1)
 
 	writeErr := r.WriteTodosToFile(newTodos)
 	if writeErr != nil {

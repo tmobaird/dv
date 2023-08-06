@@ -10,7 +10,7 @@ func TestEnsureTodosFileExists(t *testing.T) {
 	t.Run("creates the .td directory and todos file if it doesn't exist", func(t *testing.T) {
 		tdCreated := false
 		todosCreated := false
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			MkdirAllFunc: func(path string, perm os.FileMode) error {
 				tdCreated = true
 				return nil
@@ -33,7 +33,7 @@ func TestEnsureTodosFileExists(t *testing.T) {
 
 	t.Run("does not create the todos file if it already exists", func(t *testing.T) {
 		todosCreated := false
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			MkdirAllFunc: func(path string, perm os.FileMode) error {
 				return nil
 			},
@@ -53,7 +53,7 @@ func TestEnsureTodosFileExists(t *testing.T) {
 	})
 
 	t.Run("returns error when unable to create .td directory", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			MkdirAllFunc: func(path string, perm os.FileMode) error {
 				return errors.New("unable to create .td directory")
 			},
@@ -69,13 +69,13 @@ func TestEnsureTodosFileExists(t *testing.T) {
 
 func TestReadJSONFileToMap(t *testing.T) {
 	t.Run("returns todos from todos.json", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			ReadFileFunc: func(filename string) ([]byte, error) {
 				return []byte(`[]`), nil
 			},
 		}
 
-		todos, err := r.ReadJSONFileToMap()
+		todos, err := r.ReadTodosFromFile()
 
 		assertNoError(t, err)
 		if len(todos) != 0 {
@@ -85,25 +85,25 @@ func TestReadJSONFileToMap(t *testing.T) {
 
 	t.Run("returns error when read fails", func(t *testing.T) {
 		var want error = errors.New("unable to read file")
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			ReadFileFunc: func(filename string) ([]byte, error) {
 				return nil, want
 			},
 		}
 
-		_, got := r.ReadJSONFileToMap()
+		_, got := r.ReadTodosFromFile()
 
 		assertError(t, got, want)
 	})
 
 	t.Run("returns error when unmarshalling fails", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			ReadFileFunc: func(filename string) ([]byte, error) {
 				return []byte(`[ded]`), nil
 			},
 		}
 
-		_, got := r.ReadJSONFileToMap()
+		_, got := r.ReadTodosFromFile()
 
 		if got == nil {
 			t.Errorf("Expected error, got nil")
@@ -113,7 +113,7 @@ func TestReadJSONFileToMap(t *testing.T) {
 
 func TestWriteMapToJSONFile(t *testing.T) {
 	t.Run("returns no error when write is successful", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			WriteFileFunc: func(filename string, data []byte, perm os.FileMode) error {
 				return nil
 			},
@@ -126,7 +126,7 @@ func TestWriteMapToJSONFile(t *testing.T) {
 
 	t.Run("returns error when write fails", func(t *testing.T) {
 		var want error = errors.New("unable to write file")
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			WriteFileFunc: func(filename string, data []byte, perm os.FileMode) error {
 				return want
 			},
@@ -142,7 +142,7 @@ func TestEnsureConfigFileExists(t *testing.T) {
 	t.Run("creates the .td directory and config file if it doesn't exist", func(t *testing.T) {
 		tdCreated := false
 		configCreated := false
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			MkdirAllFunc: func(path string, perm os.FileMode) error {
 				tdCreated = true
 				return nil
@@ -165,7 +165,7 @@ func TestEnsureConfigFileExists(t *testing.T) {
 
 	t.Run("does not create the todos file if it already exists", func(t *testing.T) {
 		configCreated := false
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			MkdirAllFunc: func(path string, perm os.FileMode) error {
 				return nil
 			},
@@ -185,7 +185,7 @@ func TestEnsureConfigFileExists(t *testing.T) {
 	})
 
 	t.Run("returns error when unable to create .td directory", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			MkdirAllFunc: func(path string, perm os.FileMode) error {
 				return errors.New("unable to create .td directory")
 			},
@@ -201,13 +201,13 @@ func TestEnsureConfigFileExists(t *testing.T) {
 
 func TestReadConfigFile(t *testing.T) {
 	t.Run("returns config from config.json", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			ReadFileFunc: func(filename string) ([]byte, error) {
 				return []byte(`{"hideCompleted":true}`), nil
 			},
 		}
 
-		config, err := r.ReadConfigFile()
+		config, err := r.ReadConfigFromFile()
 
 		assertNoError(t, err)
 		if config.HideCompleted != true {
@@ -217,25 +217,25 @@ func TestReadConfigFile(t *testing.T) {
 
 	t.Run("returns error when read fails", func(t *testing.T) {
 		var want error = errors.New("unable to read file")
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			ReadFileFunc: func(filename string) ([]byte, error) {
 				return nil, want
 			},
 		}
 
-		_, got := r.ReadConfigFile()
+		_, got := r.ReadConfigFromFile()
 
 		assertError(t, got, want)
 	})
 
 	t.Run("returns error when unmarshalling fails", func(t *testing.T) {
-		r := &RealReaderWriter{
+		r := &TdReaderWriter{
 			ReadFileFunc: func(filename string) ([]byte, error) {
 				return []byte(`[ded]`), nil
 			},
 		}
 
-		_, got := r.ReadConfigFile()
+		_, got := r.ReadConfigFromFile()
 
 		if got == nil {
 			t.Errorf("Expected error, got nil")
