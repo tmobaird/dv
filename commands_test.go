@@ -390,20 +390,6 @@ func TestRank(t *testing.T) {
 	})
 }
 
-func assertEquals(t testing.TB, got, want interface{}) {
-	t.Helper()
-	if got != want {
-		t.Errorf("got \"%v\" want \"%v\"", got, want)
-	}
-}
-
-func assertCorrectError(t testing.TB, got error, want string) {
-	t.Helper()
-	if got.Error() != want {
-		t.Errorf("got \"%s\" want \"%s\"", got, want)
-	}
-}
-
 func assertLength(t testing.TB, got []Todo, want int) {
 	t.Helper()
 	if len(got) != want {

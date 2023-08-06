@@ -26,9 +26,8 @@ func TestEnsureTodosFileExists(t *testing.T) {
 		err := r.EnsureTodosFileExists()
 
 		assertNoError(t, err)
-
-		assertTdCreated(t, tdCreated, true)
-		assertTodosFileCreated(t, todosCreated, true)
+		assertEquals(t, tdCreated, true)
+		assertEquals(t, todosCreated, true)
 	})
 
 	t.Run("does not create the todos file if it already exists", func(t *testing.T) {
@@ -49,7 +48,7 @@ func TestEnsureTodosFileExists(t *testing.T) {
 		err := r.EnsureTodosFileExists()
 
 		assertNoError(t, err)
-		assertTodosFileCreated(t, todosCreated, true)
+		assertEquals(t, todosCreated, true)
 	})
 
 	t.Run("returns error when unable to create .td directory", func(t *testing.T) {
@@ -93,7 +92,7 @@ func TestReadJSONFileToMap(t *testing.T) {
 
 		_, got := r.ReadTodosFromFile()
 
-		assertError(t, got, want)
+		assertCorrectError(t, got, want.Error())
 	})
 
 	t.Run("returns error when unmarshalling fails", func(t *testing.T) {
@@ -134,7 +133,7 @@ func TestWriteMapToJSONFile(t *testing.T) {
 
 		got := r.WriteTodosToFile([]Todo{})
 
-		assertError(t, got, want)
+		assertCorrectError(t, got, want.Error())
 	})
 }
 
@@ -158,9 +157,8 @@ func TestEnsureConfigFileExists(t *testing.T) {
 		err := r.EnsureConfigFileExists()
 
 		assertNoError(t, err)
-
-		assertTdCreated(t, tdCreated, true)
-		assertTodosFileCreated(t, configCreated, true)
+		assertEquals(t, tdCreated, true)
+		assertEquals(t, configCreated, true)
 	})
 
 	t.Run("does not create the todos file if it already exists", func(t *testing.T) {
@@ -181,7 +179,7 @@ func TestEnsureConfigFileExists(t *testing.T) {
 		err := r.EnsureConfigFileExists()
 
 		assertNoError(t, err)
-		assertTodosFileCreated(t, configCreated, true)
+		assertEquals(t, configCreated, true)
 	})
 
 	t.Run("returns error when unable to create .td directory", func(t *testing.T) {
@@ -225,7 +223,7 @@ func TestReadConfigFile(t *testing.T) {
 
 		_, got := r.ReadConfigFromFile()
 
-		assertError(t, got, want)
+		assertCorrectError(t, got, want.Error())
 	})
 
 	t.Run("returns error when unmarshalling fails", func(t *testing.T) {
@@ -241,36 +239,4 @@ func TestReadConfigFile(t *testing.T) {
 			t.Errorf("Expected error, got nil")
 		}
 	})
-}
-
-func assertTdCreated(t *testing.T, gotTdCreated, wantTdCreated bool) {
-	t.Helper()
-
-	if gotTdCreated != wantTdCreated {
-		t.Errorf("Expected tdCreated = %v, got %v", wantTdCreated, gotTdCreated)
-	}
-}
-
-func assertTodosFileCreated(t *testing.T, gotTodosCreated, wantTodosCreated bool) {
-	t.Helper()
-
-	if gotTodosCreated != wantTodosCreated {
-		t.Errorf("Expected todosCreated = %v, got %v", wantTodosCreated, gotTodosCreated)
-	}
-}
-
-func assertNoError(t *testing.T, err error) {
-	t.Helper()
-
-	if err != nil {
-		t.Errorf("Expected no error, got %v", err)
-	}
-}
-
-func assertError(t *testing.T, got, want error) {
-	t.Helper()
-
-	if got.Error() != want.Error() {
-		t.Errorf("got \"%s\" want \"%s\"", got.Error(), want.Error())
-	}
 }
