@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 )
 
@@ -50,4 +51,20 @@ func ReportTodos(todos []Todo, verbose, hideCompleted bool) string {
 
 func ReportError(error error, command string) string {
 	return fmt.Sprintf("ERROR - Failed to execute %s\n- %s\n", command, error.Error())
+}
+
+func ReportConfig(config Config) string {
+	output := ""
+
+	output += "=== Config ===\n"
+	v := reflect.ValueOf(config)
+    t := v.Type()
+
+    for i := 0; i < t.NumField(); i++ {
+        field := t.Field(i)
+        value := v.Field(i)
+        output += fmt.Sprintf("%s: %v\n", field.Name, value.Interface())
+    }
+
+	return output
 }

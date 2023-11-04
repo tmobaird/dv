@@ -15,6 +15,7 @@ type ReaderWriter interface {
 	EnsureTodosFileExists() error
 	EnsureConfigFileExists() error
 	ReadConfigFromFile() (Config, error)
+	WriteConfigToFile(Config) error
 }
 
 type TdReaderWriter struct {
@@ -98,4 +99,14 @@ func (r *TdReaderWriter) ReadConfigFromFile() (Config, error) {
 	}
 
 	return config, nil
+}
+
+func (r *TdReaderWriter) WriteConfigToFile(config Config) error {
+	jsonData, err := json.MarshalIndent(config, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	err = r.WriteFileFunc(r.configFilePath(), jsonData, 0644)
+	return err
 }

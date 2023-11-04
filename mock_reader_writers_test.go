@@ -7,6 +7,7 @@ import (
 
 type MockReaderWriter struct {
 	todos         []Todo
+	Config        Config
 	MkdirAllFunc  func(path string, perm os.FileMode) error
 	StatFunc      func(name string) (os.FileInfo, error)
 	WriteFileFunc func(filename string, data []byte, perm os.FileMode) error
@@ -30,7 +31,12 @@ func (m *MockReaderWriter) EnsureConfigFileExists() error {
 }
 
 func (m *MockReaderWriter) ReadConfigFromFile() (Config, error) {
-	return Config{}, nil
+	return m.Config, nil
+}
+
+func (m *MockReaderWriter) WriteConfigToFile(config Config) error {
+	m.Config = config
+	return nil
 }
 
 type ErrorMockReader struct {
@@ -54,7 +60,11 @@ func (m *ErrorMockReader) EnsureConfigFileExists() error {
 }
 
 func (m *ErrorMockReader) ReadConfigFromFile() (Config, error) {
-	return Config{}, nil
+	return Config{}, errors.New("Failed to read file")
+}
+
+func (m *ErrorMockReader) WriteConfigToFile(config Config) error {
+	return nil
 }
 
 type ErrorMockWriter struct {
@@ -79,4 +89,8 @@ func (m *ErrorMockWriter) EnsureConfigFileExists() error {
 
 func (m *ErrorMockWriter) ReadConfigFromFile() (Config, error) {
 	return Config{}, nil
+}
+
+func (m *ErrorMockWriter) WriteConfigToFile(config Config) error {
+	return errors.New("Failed to write file")
 }

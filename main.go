@@ -19,6 +19,8 @@ func help() {
 	fmt.Println("  un, undo   <index|uuid>             Mark a todo as not done")
 	fmt.Println("  e,  edit   <index|uuid> <new name>  Edit a todo")
 	fmt.Println("  r,  rank   <index|uuid> <new rank>  Rerank a todo")
+	fmt.Println("      config set <key> <value>        Set a config value")
+	fmt.Println("             get                      Get all config values")
 	os.Exit(0)
 }
 
@@ -90,6 +92,7 @@ func main() {
 			Undo:   undo,
 			Edit:   edit,
 			Rank:   rank,
+			Config: config,
 			ReaderWriter: &TdReaderWriter{
 				Context:       getContext(),
 				MkdirAllFunc:  os.MkdirAll,

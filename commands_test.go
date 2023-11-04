@@ -390,6 +390,37 @@ func TestRank(t *testing.T) {
 	})
 }
 
+func TestConfig(t *testing.T) {
+	t.Run("sets config property", func(t *testing.T) {
+		rw := &MockReaderWriter{}
+		c, _ := config("set", []string{"HideCompleted", "true"}, Config{}, rw)
+		if c.HideCompleted != true {
+			t.Errorf("got %v want %v", c.HideCompleted, true)
+		}
+	})
+
+	t.Run("write config to file", func(t *testing.T) {
+		rw := &MockReaderWriter{}
+		config("set", []string{"HideCompleted", "true"}, Config{}, rw)
+
+		got, _ := rw.ReadConfigFromFile()
+		want := Config{HideCompleted: true}
+
+		if got.HideCompleted != want.HideCompleted {
+			t.Errorf("got %v want %v", got, want)
+		}
+	})
+
+	t.Run("returns error when fails to write file", func(t *testing.T) {
+		rw := &ErrorMockWriter{}
+
+		_, gotError := config("set", []string{"HideCompleted", "true"}, Config{}, rw)
+		wantErrorMessage := "Failed to write file"
+
+		assertCorrectError(t, gotError, wantErrorMessage)
+	})
+}
+
 func assertLength(t testing.TB, got []Todo, want int) {
 	t.Helper()
 	if len(got) != want {

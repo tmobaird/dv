@@ -8,6 +8,7 @@ var NoTodoSpecifedErr = errors.New("No todo specified (need id or index).")
 var NoIndexOrNameErr = errors.New("Not enough arguments (need id or index and new name).")
 var NoIndexOrRankErr = errors.New("Not enough arguments (need id or index and new rank).")
 var NoSuchCommandErr = errors.New("No such command")
+var NoConfigKeyOrValErr = errors.New("No config key or value specified")
 
 type Cli struct {
 	Command   string
@@ -25,7 +26,7 @@ func (c Cli) verifyArguments(argsNeeded int, ifErr error) error {
 	return nil
 }
 
-func (c Cli) runCommand() ([]Todo, error) {
+func (c *Cli) runCommand() ([]Todo, error) {
 	var todos []Todo
 	var err error
 
@@ -60,6 +61,12 @@ func (c Cli) runCommand() ([]Todo, error) {
 			return todos, err
 		}
 		todos, err = c.Commander.Rank(c.Args[0], c.Args[1], c.Commander.ReaderWriter)
+	case "config":
+		err = c.verifyArguments(1, NoConfigKeyOrValErr)
+		if err != nil {
+			return todos, err
+		}
+		c.Config, err = c.Commander.Config(c.Args[0], c.Args[1:], c.Config, c.Commander.ReaderWriter)
 	case "version", "v":
 		c.PrintFunc("td version: " + Version() + "\n")
 	default:
@@ -69,11 +76,13 @@ func (c Cli) runCommand() ([]Todo, error) {
 	return todos, err
 }
 
-func (c Cli) Run() {
+func (c *Cli) Run() {
 	todos, err := c.runCommand()
 
 	if err != nil {
 		c.PrintFunc(ReportError(err, c.Command))
+	} else if c.Command == "config" {
+		c.PrintFunc(ReportConfig(c.Config))
 	} else {
 		c.PrintFunc(ReportTodos(todos, c.Verbose, c.Config.HideCompleted))
 	}

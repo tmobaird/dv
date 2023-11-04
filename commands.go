@@ -217,3 +217,18 @@ func rank(uid, rank string, r ReaderWriter) ([]Todo, error) {
 
 	return newTodos, nil
 }
+
+func config(action string, inputs []string, config Config, rw ReaderWriter) (Config, error) {
+	if action == "set" {
+		config.set(inputs[0], inputs[1])
+		err := rw.WriteConfigToFile(config)
+		if err != nil {
+			return config, err
+		}
+	} else if action == "get" {
+	} else {
+		return config, errors.New("Invalid config action")
+	}
+
+	return config, nil
+}
