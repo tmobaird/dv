@@ -30,9 +30,9 @@ func (c Cli) runCommand() ([]Todo, error) {
 	var err error
 
 	switch c.Command {
-	case "list", "ls":
+	case "list", "ls", "status", "st":
 		todos, err = c.Commander.List(c.Commander.ReaderWriter)
-	case "delete", "d":
+	case "delete", "d", "rm":
 		todos, err = c.Commander.Delete(c.Args[0:], c.Commander.ReaderWriter)
 	case "add", "a":
 		todos, err = c.Commander.Add(c.Args, c.Commander.ReaderWriter)
@@ -42,7 +42,7 @@ func (c Cli) runCommand() ([]Todo, error) {
 			return todos, err
 		}
 		todos, err = c.Commander.Done(c.Args[0], c.Commander.ReaderWriter)
-	case "undo", "un":
+	case "undo", "un", "reset":
 		err = c.verifyArguments(1, NoTodoSpecifedErr)
 		if err != nil {
 			return todos, err
