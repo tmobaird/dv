@@ -66,3 +66,64 @@ Commands:
     - [ ] Multiple todo lists
     - [ ] Switch ranking to be done through UUID so that indexes can be remove completed indexes
 - [ ] Subtodos
+
+
+# V2 Features
+- Basic todo lists
+  - done/not done
+  - prioritizing
+  - CRUD
+- Open in editor
+- Type of task
+- Multiple contexts/domains (todo groups)
+- Estimated duration
+- Added at, finished at
+- Scheduler
+
+# Interface ideas
+
+```
+✅td config              # shows or edits the config
+td context             # shows current context
+td context "new"       # sets context to new
+td add "item"          # adds new todo
+td ls                  # lists todos, should include filters --type="admin"
+td edit "item" name    # edits name of item
+td rank "item" rank    # moves item up or down in list
+td rm "item"           # deletes item from list
+td done "item"         # marks as done
+td undone "item"       # marks as not done
+td edit                # opens current context todo list in $EDITOR
+td schedule            # shows the schedule or generates it if not saved
+td schedule --generate # refreshes the last schedule
+```
+
+Schedule should have an LLM and Calendar integration something like:
+
+```
+Here are my tasks and some notes about them for today (ordered based on importance):
+- task 1
+- task 2
+- task 3
+
+Here is my calendar for today (you can assume not accounted for time is free time):
+- 9-9:30 AM Standup
+- 11:45 - 12:45 PM Meeting
+- 12:45 - 1:30 PM Lunch
+
+Generate a schedule for my tasks, when I should do them and in what order.
+The logic should try to factor in the following:
+- Prioritization (ordering)
+- Time necessary (if duration not estimated in work notes, assume anywhere between 30-90 minutes)
+
+Return the results in the following structure:
+interface ScheduledTask {
+  name: string,
+  id: string,
+  start_time: datetime,
+  end_time: datetime
+}[]
+
+A single task can have multiple entries, if the suggested approach is breaking them up over multiple blocks.
+The list should be sorted based on time.
+```
