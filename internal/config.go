@@ -79,7 +79,7 @@ func Save(writer io.Writer, config Config) error {
 }
 
 func PersistConfig(config Config) error {
-	file, err := os.OpenFile(ConfigFilePath(), os.O_RDWR, 0644)
+	file, err := os.OpenFile(ConfigFilePath(), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
