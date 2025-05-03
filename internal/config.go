@@ -1,14 +1,31 @@
 package internal
 
 import (
+	"fmt"
 	"io"
 	"io/fs"
+	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
 	Context string `yaml:"context"`
+}
+
+const FILENAME = "config.yaml"
+
+func BasePath() string {
+	dirname := ".td"
+	if os.Getenv("TD_BASE_PATH") != "" {
+		dirname = os.Getenv("TD_BASE_PATH")
+	}
+
+	return dirname
+}
+
+func ConfigFilePath() string {
+	return fmt.Sprintf("%s/%s", BasePath(), FILENAME)
 }
 
 func FileExists(fileSystem fs.FS) bool {
@@ -20,7 +37,7 @@ func FileExists(fileSystem fs.FS) bool {
 	found := false
 
 	for _, file := range files {
-		if file.Name() == "config.yaml" {
+		if file.Name() == FILENAME {
 			found = true
 		}
 	}
@@ -34,7 +51,7 @@ func DefaultConfig() Config {
 
 func Read(fileSystem fs.FS) (Config, error) {
 	if FileExists(fileSystem) {
-		yamlFile, err := fs.ReadFile(fileSystem, "config.yaml")
+		yamlFile, err := fs.ReadFile(fileSystem, FILENAME)
 		if err != nil {
 			return Config{}, err
 		}
@@ -58,5 +75,15 @@ func Save(writer io.Writer, config Config) error {
 	}
 
 	_, err = writer.Write(output)
+	return err
+}
+
+func PersistConfig(config Config) error {
+	file, err := os.OpenFile(ConfigFilePath(), os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+
+	err = Save(file, config)
 	return err
 }

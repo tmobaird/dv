@@ -84,8 +84,8 @@ Commands:
 
 ```
 ✅td config              # shows or edits the config
-td context             # shows current context
-td context "new"       # sets context to new
+✅td context             # shows current context
+✅td context "new"       # sets context to new
 td add "item"          # adds new todo
 td ls                  # lists todos, should include filters --type="admin"
 td edit "item" name    # edits name of item

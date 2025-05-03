@@ -20,16 +20,12 @@ var ConfigCmd = &cobra.Command{
 	Short: "Get current config",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		dirname := ".td"
-		if os.Getenv("TD_BASE_PATH") != "" {
-			dirname = os.Getenv("TD_BASE_PATH")
-		}
 		if Edit {
 			if os.Getenv("EDITOR") == "" {
 				cmd.OutOrStderr().Write([]byte("Must set $EDITOR to edit config"))
 				return
 			}
-			cmd := exec.Command(os.Getenv("EDITOR"), fmt.Sprintf("%s/config.yaml", dirname)) // Replace filename.txt with the actual file path
+			cmd := exec.Command(os.Getenv("EDITOR"), internal.ConfigFilePath()) // Replace filename.txt with the actual file path
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
 
@@ -38,7 +34,7 @@ var ConfigCmd = &cobra.Command{
 				fmt.Println("Error:", err)
 			}
 		} else {
-			config, err := internal.Read(os.DirFS(dirname))
+			config, err := internal.Read(os.DirFS(internal.BasePath()))
 			if err != nil {
 				cmd.OutOrStderr().Write([]byte("FAILED TO READ"))
 				cmd.OutOrStderr().Write([]byte(err.Error()))

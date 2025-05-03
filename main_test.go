@@ -1,46 +1,65 @@
 package main
 
 import (
-	"bytes"
 	"os"
 	"strings"
 	"td/cmd"
 	"td/internal"
+	"td/internal/testutils"
 	"testing"
-
-	"github.com/spf13/cobra"
 )
 
 func TestIntegration(t *testing.T) {
-	t.Run("Config returns config", func(t *testing.T) {
-		// setup
-		os.Setenv("TD_BASE_PATH", "tmp")
-		file, err := os.Create("tmp/config.yaml")
-		if err != nil {
-			t.Errorf("Failed to create tmp file %s", err.Error())
-		}
-		defer os.Remove(file.Name())
+	t.Run("td config", func(t *testing.T) {
+		file := CreateConfigFile(t)
+		defer Cleanup(file.Name())
+
 		config := internal.Config{Context: "main"}
 		internal.Save(file, config)
 
-		// execution
-		rootCmd := &cobra.Command{Use: "app"}
-		rootCmd.AddCommand(cmd.ConfigCmd)
-		outputBuf := new(bytes.Buffer)
-		rootCmd.SetOut(outputBuf)
+		rootCmd, outputBuf := SetupCmd(cmd.ConfigCmd)
 		rootCmd.SetArgs([]string{"config"})
-		if err := rootCmd.Execute(); err != nil {
-			t.Errorf("command failed: %v", err)
-		}
+		ExecuteCmd(t, rootCmd)
 
-		// expectation
 		got := outputBuf.String()
 		if !strings.Contains(got, "Context: main") {
 			t.Errorf("Expected %s to contain %s", got, "Context: main")
 		}
 	})
 
-	t.Run("Context", func(t *testing.T) {
+	t.Run("td context", func(t *testing.T) {
+		file := CreateConfigFile(t)
+		defer Cleanup(file.Name())
 
+		config := internal.Config{Context: "my-context"}
+		internal.Save(file, config)
+
+		rootCmd, outputBuf := SetupCmd(cmd.ContextCmd)
+		rootCmd.SetArgs([]string{"context"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "my-context"
+		got := outputBuf.String()
+		testutils.AssertEqual(t, expected, got)
+	})
+
+	t.Run("td context new-value", func(t *testing.T) {
+		file := CreateConfigFile(t)
+		defer Cleanup(file.Name())
+
+		config := internal.Config{Context: "my-context"}
+		internal.Save(file, config)
+
+		rootCmd, outputBuf := SetupCmd(cmd.ContextCmd)
+		rootCmd.SetArgs([]string{"context", "updated-context"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "Updated context to updated-context"
+		got := outputBuf.String()
+
+		testutils.AssertEqual(t, expected, got)
+		loaded, err := internal.Read(os.DirFS(internal.BasePath()))
+		testutils.AssertNoError(t, err)
+		testutils.AssertEqual(t, loaded.Context, "updated-context")
 	})
 }
