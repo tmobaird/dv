@@ -62,4 +62,28 @@ func TestIntegration(t *testing.T) {
 		testutils.AssertNoError(t, err)
 		testutils.AssertEqual(t, loaded.Context, "updated-context")
 	})
+
+	t.Run("td list", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := "tmp/lists"
+		err := os.MkdirAll(dirname, 0755)
+		testutils.AssertNoError(t, err)
+		todosFile, err := os.Create("tmp/lists/main.md")
+		testutils.AssertNoError(t, err)
+		todosFile.Write([]byte("- [ ] todo numero uno"))
+		defer os.RemoveAll(dirname)
+
+		rootCmd, outputBuf := SetupCmd(cmd.ListCmd)
+		rootCmd.SetArgs([]string{"list"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "1. [ ] todo numero uno\n"
+		got := outputBuf.String()
+
+		testutils.AssertEqual(t, expected, got)
+	})
 }

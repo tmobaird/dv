@@ -94,9 +94,11 @@ func TestConfig(t *testing.T) {
 		testutils.AssertEqual(t, "updated-context", config.Context)
 	})
 
-	t.Run("PersistConfig returns an error when file does not exist", func(t *testing.T) {
+	t.Run("PersistConfig does not return an error when having to create the file", func(t *testing.T) {
+		os.Setenv("TD_BASE_PATH", "tmp")
+		defer os.Remove("tmp/config.yaml")
 		config := Config{Context: "my-context"}
 		err := PersistConfig(config)
-		testutils.AssertError(t, err)
+		testutils.AssertNoError(t, err)
 	})
 }

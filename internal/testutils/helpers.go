@@ -7,14 +7,14 @@ import (
 func AssertEqual[T comparable](t *testing.T, expected, got T, msg ...interface{}) {
 	t.Helper()
 	if expected != got {
-		t.Errorf("expected %v, got %v, %v", expected, got, msg)
+		t.Errorf("\nexpected '%v'\ngot '%v'\n%v", expected, got, msg)
 	}
 }
 
 func AssertNotEqual[T comparable](t *testing.T, expected, got T, msg ...interface{}) {
 	t.Helper()
 	if expected == got {
-		t.Errorf("expected %v to not equal %v, %v", got, expected, msg)
+		t.Errorf("expected '%v'\nto not equal '%v'\n%v", got, expected, msg)
 	}
 }
 
