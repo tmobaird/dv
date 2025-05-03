@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"io"
 	"io/fs"
 
@@ -14,7 +13,6 @@ type Config struct {
 
 func FileExists(fileSystem fs.FS) bool {
 	files, err := fs.ReadDir(fileSystem, ".")
-	fmt.Println(files)
 	if err != nil {
 		return false
 	}
@@ -49,7 +47,7 @@ func Read(fileSystem fs.FS) (Config, error) {
 
 		return config, nil
 	}
-	
+
 	return DefaultConfig(), nil
 }
 
