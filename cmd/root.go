@@ -30,7 +30,7 @@ func loadConfig() error {
 		return err
 	}
 
-	file, err := os.OpenFile(dirname, os.O_CREATE, 0644)
+	file, err := os.OpenFile(internal.ConfigFilePath(), os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}

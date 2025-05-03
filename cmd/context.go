@@ -1,20 +1,33 @@
 package cmd
 
 import (
-	"fmt"
+	"os"
+	"td/internal"
+	"td/internal/controllers"
 
 	"github.com/spf13/cobra"
 )
 
 func init() {
-	rootCmd.AddCommand(contextCmd)
+	rootCmd.AddCommand(ContextCmd)
 }
 
-var contextCmd = &cobra.Command{
+var ContextCmd = &cobra.Command{
 	Use:   "context",
 	Short: "Get or set the current context",
 	Long:  `TODO`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hugo Static Site Generator v0.9 -- HEAD")
+		config, err := internal.Read(os.DirFS(internal.BasePath()))
+		if err != nil {
+			cmd.OutOrStderr().Write([]byte(err.Error()))
+			return
+		}
+
+		result, err := controllers.ContextController{Base: controllers.Controller{Args: args, Config: config}}.Run()
+		if err != nil {
+			cmd.OutOrStderr().Write([]byte(err.Error()))
+		} else {
+			cmd.OutOrStdout().Write([]byte(result))
+		}
 	},
 }
