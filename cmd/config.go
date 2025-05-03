@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"td/internal"
+	"td/internal/controllers"
 
 	"github.com/spf13/cobra"
 )
@@ -34,12 +35,11 @@ var ConfigCmd = &cobra.Command{
 				fmt.Println("Error:", err)
 			}
 		} else {
-			config, err := internal.Read(os.DirFS(internal.BasePath()))
+			result, err := controllers.ConfigController{Base: controllers.Controller{Args: args}}.Run()
 			if err != nil {
-				cmd.OutOrStderr().Write([]byte("FAILED TO READ"))
 				cmd.OutOrStderr().Write([]byte(err.Error()))
 			} else {
-				cmd.OutOrStderr().Write([]byte(fmt.Sprintf("Current Config:\n  Context: %s", config.Context)))
+				cmd.OutOrStdout().Write([]byte(result))
 			}
 		}
 	},

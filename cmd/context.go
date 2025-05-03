@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"td/internal"
+	"td/internal/controllers"
 
 	"github.com/spf13/cobra"
 )
@@ -23,16 +23,11 @@ var ContextCmd = &cobra.Command{
 			return
 		}
 
-		if len(args) > 0 {
-			config.Context = args[0]
-			err := internal.PersistConfig(config)
-			if err != nil {
-				cmd.OutOrStderr().Write([]byte(err.Error()))
-			} else {
-				cmd.OutOrStdout().Write([]byte(fmt.Sprintf("Updated context to %s", config.Context)))
-			}
+		result, err := controllers.ContextController{Base: controllers.Controller{Args: args, Config: config}}.Run()
+		if err != nil {
+			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {
-			cmd.OutOrStdout().Write([]byte(config.Context))
+			cmd.OutOrStdout().Write([]byte(result))
 		}
 	},
 }

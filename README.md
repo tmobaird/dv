@@ -86,14 +86,14 @@ Commands:
 ✅td config              # shows or edits the config
 ✅td context             # shows current context
 ✅td context "new"       # sets context to new
-td add "item"          # adds new todo
 td ls                  # lists todos, should include filters --type="admin"
-td edit "item" name    # edits name of item
+td add "item"          # adds new todo
+td open                # opens current context todo list in $EDITOR
+td mv "item" name      # edits name of item
 td rank "item" rank    # moves item up or down in list
 td rm "item"           # deletes item from list
 td done "item"         # marks as done
 td undone "item"       # marks as not done
-td edit                # opens current context todo list in $EDITOR
 td schedule            # shows the schedule or generates it if not saved
 td schedule --generate # refreshes the last schedule
 ```
