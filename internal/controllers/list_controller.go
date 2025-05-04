@@ -35,9 +35,11 @@ func (controller ListController) Run() (string, error) {
 	todos := []models.Todo{}
 	parseTodos(data, &todos)
 
-	if len(todos) > 0 {
+	filtered := filterTodos(todos, controller.Base.Config.HideCompleted)
+
+	if len(filtered) > 0 {
 		result := ""
-		for i, todo := range todos {
+		for i, todo := range filtered {
 			result += presentTodo(i+1, todo)
 		}
 
@@ -45,6 +47,20 @@ func (controller ListController) Run() (string, error) {
 	} else {
 		return "No todos in list.", nil
 	}
+}
+
+func filterTodos(todos []models.Todo, hideCompleted bool) []models.Todo {
+	filtered := []models.Todo{}
+	for _, todo := range todos {
+		if hideCompleted {
+			if !todo.Complete {
+				filtered = append(filtered, todo)
+			}
+		} else {
+			filtered = append(filtered, todo)
+		}
+	}
+	return filtered
 }
 
 func parseTodos(bytes []byte, todos *[]models.Todo) {

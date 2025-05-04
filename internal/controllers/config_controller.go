@@ -15,6 +15,6 @@ func (controller ConfigController) Run() (string, error) {
 	if err != nil {
 		return "", err
 	} else {
-		return fmt.Sprintf("Current Config:\n  Context: %s", config.Context), nil
+		return fmt.Sprintf("Current Config:\n  Context: %s\n  Hide Completed: %t", config.Context, config.HideCompleted), nil
 	}
 }
