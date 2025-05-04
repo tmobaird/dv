@@ -28,6 +28,10 @@ func ConfigFilePath() string {
 	return fmt.Sprintf("%s/%s", BasePath(), FILENAME)
 }
 
+func TodoFilePath(context string) string {
+	return fmt.Sprintf("%s/lists/%s.md", BasePath(), context)
+}
+
 func FileExists(fileSystem fs.FS) bool {
 	files, err := fs.ReadDir(fileSystem, ".")
 	if err != nil {
@@ -83,6 +87,7 @@ func PersistConfig(config Config) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	err = Save(file, config)
 	return err

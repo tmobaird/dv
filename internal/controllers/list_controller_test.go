@@ -41,12 +41,4 @@ func TestListController(t *testing.T) {
 		testutils.AssertNoError(t, err)
 		testutils.AssertEqual(t, "No todos in list.", got)
 	})
-
-	t.Run("Run returns error when failing to create directory", func(t *testing.T) {
-		t.Skip()
-	})
-
-	t.Run("Run returns error when failing to created/open todos file", func(t *testing.T) {
-		t.Skip()
-	})
 }
