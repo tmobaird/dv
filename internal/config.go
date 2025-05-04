@@ -10,7 +10,8 @@ import (
 )
 
 type Config struct {
-	Context string `yaml:"context"`
+	Context       string `yaml:"context"`
+	HideCompleted bool   `yaml:"hideCompleted"`
 }
 
 const FILENAME = "config.yaml"
@@ -50,7 +51,7 @@ func FileExists(fileSystem fs.FS) bool {
 }
 
 func DefaultConfig() Config {
-	return Config{Context: "main"}
+	return Config{Context: "main", HideCompleted: false}
 }
 
 func Read(fileSystem fs.FS) (Config, error) {
