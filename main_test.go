@@ -86,4 +86,43 @@ func TestIntegration(t *testing.T) {
 
 		testutils.AssertEqual(t, expected, got)
 	})
+
+	t.Run("td open", func(t *testing.T) {
+		os.Unsetenv("EDITOR")
+		rootCmd, outputBuf := SetupCmd(cmd.OpenCmd)
+		rootCmd.SetArgs([]string{"open"})
+		ExecuteCmd(t, rootCmd)
+
+		testutils.AssertEqual(t, "Must set $EDITOR to edit config", outputBuf.String())
+	})
+
+	t.Run("td add", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := "tmp/lists"
+		err := os.MkdirAll(dirname, 0755)
+		testutils.AssertNoError(t, err)
+		defer os.RemoveAll(dirname)
+
+		rootCmd, outputBuf := SetupCmd(cmd.AddCmd)
+		rootCmd.SetArgs([]string{"add", "do homework"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "\"do homework\" added to list."
+		got := outputBuf.String()
+
+		testutils.AssertEqual(t, expected, got)
+
+		rootCmd, outputBuf = SetupCmd(cmd.ListCmd)
+		rootCmd.SetArgs([]string{"list"})
+		ExecuteCmd(t, rootCmd)
+
+		expected = "1. [ ] do homework\n"
+		got = outputBuf.String()
+
+		testutils.AssertEqual(t, expected, got)
+	})
 }

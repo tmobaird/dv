@@ -87,8 +87,8 @@ Commands:
 ✅td context             # shows current context
 ✅td context "new"       # sets context to new
 ✅td ls                  # lists todos, should include filters --type="admin"
-td open                # opens current context todo list in $EDITOR
-td add "item"          # adds new todo
+✅td open                # opens current context todo list in $EDITOR
+✅td add "item"          # adds new todo
 td mv "item" name      # edits name of item
 td rank "item" rank    # moves item up or down in list
 td rm "item"           # deletes item from list
