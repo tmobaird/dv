@@ -18,7 +18,8 @@ func (controller ListController) Run() (string, error) {
 		return "", err
 	}
 
-	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context), controller.Base.Config.HideCompleted)
+	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context))
+	todos = models.FilterTodos(todos, controller.Base.Config.HideCompleted)
 	if err != nil {
 		return "", err
 	}

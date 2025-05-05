@@ -12,20 +12,34 @@ type RemoveController struct {
 }
 
 func (controller RemoveController) Run() (string, error) {
-	todoIndex, err := strconv.Atoi(controller.Base.Args[0])
+	todoArg, err := strconv.Atoi(controller.Base.Args[0])
 	if err != nil {
 		return "", err
 	}
+	todoIndex := todoArg - 1
 
-	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context), controller.Base.Config.HideCompleted)
+	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context))
 	if err != nil {
 		return "", err
 	}
-	if todoIndex < 1 || (todoIndex-1) > len(todos) {
-		return "", fmt.Errorf("todo @ index %d does not exist", todoIndex)
+	if todoIndex < 0 || todoIndex >= len(todos) {
+		return "", fmt.Errorf("todo @ index %d does not exist", todoArg)
 	}
 
-	target := todos[todoIndex-1]
+	if controller.Base.Config.HideCompleted {
+		notCompletedCounter := 0
+		for i, todo := range todos {
+			if !todo.Complete {
+				if notCompletedCounter == todoIndex {
+					todoIndex = i
+					break
+				}
+				notCompletedCounter++
+			}
+		}
+	}
+
+	target := todos[todoIndex]
 	todos = controller.writableTodos(todos, todoIndex)
 	err = models.WriteTodos(controller.Base.Config.Context, todos)
 	if err != nil {
@@ -38,7 +52,7 @@ func (controller RemoveController) Run() (string, error) {
 func (controller RemoveController) writableTodos(todos []models.Todo, index int) []models.Todo {
 	toWrite := []models.Todo{}
 	for i, todo := range todos {
-		if i+1 != index {
+		if i != index {
 			toWrite = append(toWrite, todo)
 		}
 	}

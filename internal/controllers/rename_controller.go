@@ -20,7 +20,7 @@ func (controller RenameController) Run() (string, error) {
 	todoIndex := todoNum - 1
 
 	// get todos
-	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context), controller.Base.Config.HideCompleted)
+	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context))
 	if err != nil {
 		return "", err
 	}
@@ -28,6 +28,20 @@ func (controller RenameController) Run() (string, error) {
 	// error when out of range
 	if todoIndex < 0 || todoIndex >= len(todos) {
 		return "", fmt.Errorf("todo @ index %d does not exist", todoNum)
+	}
+
+	if controller.Base.Config.HideCompleted {
+		notCompletedCounter := 0
+		startSet := false
+		for i, todo := range todos {
+			if !todo.Complete {
+				if notCompletedCounter == todoIndex && !startSet {
+					todoIndex = i
+					startSet = true
+				}
+				notCompletedCounter++
+			}
+		}
 	}
 
 	// find todo and update todo

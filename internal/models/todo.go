@@ -22,7 +22,7 @@ func (todo *Todo) ToMd() string {
 	return fmt.Sprintf("- [%s] %s\n", completeChar, todo.Name)
 }
 
-func GetAllTodos(filename string, hideCompleted bool) ([]Todo, error) {
+func GetAllTodos(filename string) ([]Todo, error) {
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return []Todo{}, err
@@ -34,7 +34,6 @@ func GetAllTodos(filename string, hideCompleted bool) ([]Todo, error) {
 	}
 
 	todos := parseTodos(data)
-	todos = filterTodos(todos, hideCompleted)
 	return todos, nil
 }
 
@@ -47,7 +46,7 @@ func WriteTodos(context string, todos []Todo) error {
 
 	content := ""
 	for _, todo := range todos {
-		content += fmt.Sprintf("%s\n", todo.ToMd())
+		content += todo.ToMd()
 	}
 
 	_, err = file.Write([]byte(content))
@@ -78,7 +77,7 @@ func parseTodos(bytes []byte) []Todo {
 	return todos
 }
 
-func filterTodos(todos []Todo, hideCompleted bool) []Todo {
+func FilterTodos(todos []Todo, hideCompleted bool) []Todo {
 	result := []Todo{}
 	for _, todo := range todos {
 		if hideCompleted && todo.Complete {
