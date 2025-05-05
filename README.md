@@ -89,7 +89,7 @@ Commands:
 ✅td ls                  # lists todos, should include filters --type="admin"
 ✅td open                # opens current context todo list in $EDITOR
 ✅td add "item"          # adds new todo
-td rm index              # deletes item from list
+✅td rm index              # deletes item from list
 td mv index name         # edits name of item
 td rank "item" rank    # moves item up or down in list
 td done "item"         # marks as done
