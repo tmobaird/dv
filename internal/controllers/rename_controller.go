@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"strconv"
+	"td/internal"
 	"td/internal/models"
 )
 
@@ -19,11 +20,10 @@ func (controller RenameController) Run() (string, error) {
 	todoIndex := todoNum - 1
 
 	// get todos
-	todos, err := ReadTodos(controller.Base.Config.Context)
+	todos, err := models.GetAllTodos(internal.TodoFilePath(controller.Base.Config.Context), controller.Base.Config.HideCompleted)
 	if err != nil {
 		return "", err
 	}
-	todos = FilterTodos(todos, controller.Base.Config.HideCompleted)
 
 	// error when out of range
 	if todoIndex < 0 || todoIndex >= len(todos) {
