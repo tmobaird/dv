@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"os"
+	"td/cmd"
+	"td/internal/testutils"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -36,4 +38,26 @@ func ExecuteCmd(t *testing.T, command *cobra.Command) {
 	if err := command.Execute(); err != nil {
 		t.Errorf("command failed: %v", err)
 	}
+}
+
+func CreateListsDirectory(t *testing.T) string {
+	dirname := "tmp/lists"
+	err := os.MkdirAll(dirname, 0755)
+	testutils.AssertNoError(t, err)
+	return dirname
+}
+
+func RunListCmd(t *testing.T) *bytes.Buffer {
+	outputBuf := &bytes.Buffer{}
+	rootCmd, outputBuf := SetupCmd(cmd.ListCmd)
+	rootCmd.SetArgs([]string{"list"})
+	ExecuteCmd(t, rootCmd)
+	return outputBuf
+}
+
+func CreateTodosFile(t *testing.T, filename, content string) {
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0644)
+	testutils.AssertNoError(t, err)
+	_, err = file.Write([]byte(content))
+	testutils.AssertNoError(t, err)
 }

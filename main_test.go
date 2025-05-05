@@ -69,13 +69,9 @@ func TestIntegration(t *testing.T) {
 		config := internal.Config{Context: "main"}
 		internal.Save(configFile, config)
 
-		dirname := "tmp/lists"
-		err := os.MkdirAll(dirname, 0755)
-		testutils.AssertNoError(t, err)
-		todosFile, err := os.Create("tmp/lists/main.md")
-		testutils.AssertNoError(t, err)
-		todosFile.Write([]byte("- [ ] todo numero uno"))
+		dirname := CreateListsDirectory(t)
 		defer os.RemoveAll(dirname)
+		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] todo numero uno")
 
 		rootCmd, outputBuf := SetupCmd(cmd.ListCmd)
 		rootCmd.SetArgs([]string{"list"})
@@ -102,9 +98,7 @@ func TestIntegration(t *testing.T) {
 		config := internal.Config{Context: "main"}
 		internal.Save(configFile, config)
 
-		dirname := "tmp/lists"
-		err := os.MkdirAll(dirname, 0755)
-		testutils.AssertNoError(t, err)
+		dirname := CreateListsDirectory(t)
 		defer os.RemoveAll(dirname)
 
 		rootCmd, outputBuf := SetupCmd(cmd.AddCmd)
@@ -113,16 +107,11 @@ func TestIntegration(t *testing.T) {
 
 		expected := "\"do homework\" added to list."
 		got := outputBuf.String()
-
 		testutils.AssertEqual(t, expected, got)
 
-		rootCmd, outputBuf = SetupCmd(cmd.ListCmd)
-		rootCmd.SetArgs([]string{"list"})
-		ExecuteCmd(t, rootCmd)
-
+		output := RunListCmd(t)
 		expected = "1. [ ] do homework\n"
-		got = outputBuf.String()
-
+		got = output.String()
 		testutils.AssertEqual(t, expected, got)
 	})
 
@@ -132,15 +121,9 @@ func TestIntegration(t *testing.T) {
 		config := internal.Config{Context: "main"}
 		internal.Save(configFile, config)
 
-		dirname := "tmp/lists"
-		err := os.MkdirAll(dirname, 0755)
-		testutils.AssertNoError(t, err)
+		dirname := CreateListsDirectory(t)
 		defer os.RemoveAll(dirname)
-
-		file, err := os.OpenFile("tmp/lists/main.md", os.O_CREATE|os.O_WRONLY, 0644)
-		testutils.AssertNoError(t, err)
-		_, err = file.Write([]byte("- [ ] Todo One"))
-		testutils.AssertNoError(t, err)
+		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] Todo One")
 
 		rootCmd, outputBuf := SetupCmd(cmd.RemoveCmd)
 		rootCmd.SetArgs([]string{"rm", "1"})
@@ -148,16 +131,35 @@ func TestIntegration(t *testing.T) {
 
 		expected := "\"Todo One\" removed from list."
 		got := outputBuf.String()
-
 		testutils.AssertEqual(t, expected, got)
 
-		rootCmd, outputBuf = SetupCmd(cmd.ListCmd)
-		rootCmd.SetArgs([]string{"list"})
+		output := RunListCmd(t)
+		expected = "No todos in list."
+		got = output.String()
+		testutils.AssertEqual(t, expected, got)
+	})
+
+	t.Run("td mv", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := CreateListsDirectory(t)
+		defer os.RemoveAll(dirname)
+		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] Todo One")
+
+		rootCmd, outputBuf := SetupCmd(cmd.RenameCmd)
+		rootCmd.SetArgs([]string{"mv", "1", "updated todo name"})
 		ExecuteCmd(t, rootCmd)
 
-		expected = "No todos in list."
-		got = outputBuf.String()
+		expected := "\"Todo One\" updated to \"updated todo name\"."
+		got := outputBuf.String()
+		testutils.AssertEqual(t, expected, got)
 
+		output := RunListCmd(t)
+		expected = "1. [ ] updated todo name\n"
+		got = output.String()
 		testutils.AssertEqual(t, expected, got)
 	})
 }

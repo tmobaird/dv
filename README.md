@@ -89,14 +89,17 @@ Commands:
 ✅td ls                  # lists todos, should include filters --type="admin"
 ✅td open                # opens current context todo list in $EDITOR
 ✅td add "item"          # adds new todo
-✅td rm index              # deletes item from list
-td mv index name         # edits name of item
-td rank "item" rank    # moves item up or down in list
-td done "item"         # marks as done
-td undone "item"       # marks as not done
-td schedule            # shows the schedule or generates it if not saved
-td schedule --generate # refreshes the last schedule
+✅td rm index            # deletes item from list
+✅td mv index name         # edits name of item
+td rank "item" rank      # moves item up or down in list
+td done "item"           # marks as done
+td undone "item"         # marks as not done
+td schedule              # shows the schedule or generates it if not saved
+td schedule --generate   # refreshes the last schedule
 ```
+
+**Future cleanups**
+- Arg validations (count, type, etc)
 
 Schedule should have an LLM and Calendar integration something like:
 
