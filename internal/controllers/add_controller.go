@@ -16,6 +16,7 @@ func (controller AddController) Run() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer file.Close()
 	todo := models.Todo{Name: controller.Base.Args[0], Complete: false}
 	toWrite := models.TodoToMd(todo)
 	_, err = file.Write([]byte(toWrite))

@@ -125,4 +125,39 @@ func TestIntegration(t *testing.T) {
 
 		testutils.AssertEqual(t, expected, got)
 	})
+
+	t.Run("td rm", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := "tmp/lists"
+		err := os.MkdirAll(dirname, 0755)
+		testutils.AssertNoError(t, err)
+		defer os.RemoveAll(dirname)
+
+		file, err := os.OpenFile("tmp/lists/main.md", os.O_CREATE|os.O_WRONLY, 0644)
+		testutils.AssertNoError(t, err)
+		_, err = file.Write([]byte("- [ ] Todo One"))
+		testutils.AssertNoError(t, err)
+
+		rootCmd, outputBuf := SetupCmd(cmd.RemoveCmd)
+		rootCmd.SetArgs([]string{"rm", "1"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "\"Todo One\" removed from list."
+		got := outputBuf.String()
+
+		testutils.AssertEqual(t, expected, got)
+
+		rootCmd, outputBuf = SetupCmd(cmd.ListCmd)
+		rootCmd.SetArgs([]string{"list"})
+		ExecuteCmd(t, rootCmd)
+
+		expected = "No todos in list."
+		got = outputBuf.String()
+
+		testutils.AssertEqual(t, expected, got)
+	})
 }

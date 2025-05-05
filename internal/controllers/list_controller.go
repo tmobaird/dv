@@ -14,6 +14,23 @@ type ListController struct {
 	Base Controller
 }
 
+func ReadTodos(context string) ([]models.Todo, error) {
+	filename := fmt.Sprintf("%s/lists/%s.md", internal.BasePath(), context)
+	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		return []models.Todo{}, err
+	}
+	defer file.Close()
+	data, err := io.ReadAll(file)
+	if err != nil {
+		return []models.Todo{}, err
+	}
+
+	todos := []models.Todo{}
+	parseTodos(data, &todos)
+	return todos, nil
+}
+
 func (controller ListController) Run() (string, error) {
 	dirPath := fmt.Sprintf("%s/lists", internal.BasePath())
 	err := os.MkdirAll(dirPath, 0755)
@@ -21,21 +38,11 @@ func (controller ListController) Run() (string, error) {
 		return "", err
 	}
 
-	filename := fmt.Sprintf("%s/lists/%s.md", internal.BasePath(), controller.Base.Config.Context)
-	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
+	todos, err := ReadTodos(controller.Base.Config.Context)
 	if err != nil {
 		return "", err
 	}
-	defer file.Close()
-	data, err := io.ReadAll(file)
-	if err != nil {
-		return "", err
-	}
-
-	todos := []models.Todo{}
-	parseTodos(data, &todos)
-
-	filtered := filterTodos(todos, controller.Base.Config.HideCompleted)
+	filtered := FilterTodos(todos, controller.Base.Config.HideCompleted)
 
 	if len(filtered) > 0 {
 		result := ""
@@ -49,7 +56,7 @@ func (controller ListController) Run() (string, error) {
 	}
 }
 
-func filterTodos(todos []models.Todo, hideCompleted bool) []models.Todo {
+func FilterTodos(todos []models.Todo, hideCompleted bool) []models.Todo {
 	filtered := []models.Todo{}
 	for _, todo := range todos {
 		if hideCompleted {
