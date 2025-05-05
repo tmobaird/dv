@@ -49,7 +49,7 @@ func (controller RemoveController) writableTodos(todos []models.Todo, index int)
 	toWrite := []string{}
 	for i, todo := range todos {
 		if i+1 != index {
-			toWrite = append(toWrite, models.TodoToMd(todo))
+			toWrite = append(toWrite, todo.ToMd())
 		}
 	}
 	return toWrite

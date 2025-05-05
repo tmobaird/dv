@@ -31,6 +31,20 @@ func ReadTodos(context string) ([]models.Todo, error) {
 	return todos, nil
 }
 
+func FilterTodos(todos []models.Todo, hideCompleted bool) []models.Todo {
+	filtered := []models.Todo{}
+	for _, todo := range todos {
+		if hideCompleted {
+			if !todo.Complete {
+				filtered = append(filtered, todo)
+			}
+		} else {
+			filtered = append(filtered, todo)
+		}
+	}
+	return filtered
+}
+
 func (controller ListController) Run() (string, error) {
 	dirPath := fmt.Sprintf("%s/lists", internal.BasePath())
 	err := os.MkdirAll(dirPath, 0755)
@@ -54,20 +68,6 @@ func (controller ListController) Run() (string, error) {
 	} else {
 		return "No todos in list.", nil
 	}
-}
-
-func FilterTodos(todos []models.Todo, hideCompleted bool) []models.Todo {
-	filtered := []models.Todo{}
-	for _, todo := range todos {
-		if hideCompleted {
-			if !todo.Complete {
-				filtered = append(filtered, todo)
-			}
-		} else {
-			filtered = append(filtered, todo)
-		}
-	}
-	return filtered
 }
 
 func parseTodos(bytes []byte, todos *[]models.Todo) {
