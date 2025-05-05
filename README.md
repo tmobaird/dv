@@ -91,7 +91,7 @@ Commands:
 ✅td add "item"          # adds new todo
 ✅td rm index            # deletes item from list
 ✅td mv index name         # edits name of item
-td rank "item" rank      # moves item up or down in list
+🟡td rank "item" rank      # moves item up or down in list
 td done "item"           # marks as done
 td undone "item"         # marks as not done
 td schedule              # shows the schedule or generates it if not saved

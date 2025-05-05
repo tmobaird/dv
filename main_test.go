@@ -162,4 +162,28 @@ func TestIntegration(t *testing.T) {
 		got = output.String()
 		testutils.AssertEqual(t, expected, got)
 	})
+
+	t.Run("td rank", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := CreateListsDirectory(t)
+		defer os.RemoveAll(dirname)
+		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] Todo A\n- [ ] Todo B\n")
+
+		rootCmd, outputBuf := SetupCmd(cmd.RankCmd)
+		rootCmd.SetArgs([]string{"rank", "1", "2"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "\"Todo A\" ranked to index 2."
+		got := outputBuf.String()
+		testutils.AssertEqual(t, expected, got)
+
+		output := RunListCmd(t)
+		expected = "1. [ ] Todo B\n2. [ ] Todo A\n"
+		got = output.String()
+		testutils.AssertEqual(t, expected, got)
+	})
 }
