@@ -186,4 +186,28 @@ func TestIntegration(t *testing.T) {
 		got = output.String()
 		testutils.AssertEqual(t, expected, got)
 	})
+
+	t.Run("td mark", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := CreateListsDirectory(t)
+		defer os.RemoveAll(dirname)
+		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] Todo A\n- [ ] Todo B\n")
+
+		rootCmd, outputBuf := SetupCmd(cmd.MarkCmd)
+		rootCmd.SetArgs([]string{"mark", "1", "done"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := "\"Todo A\" marked done."
+		got := outputBuf.String()
+		testutils.AssertEqual(t, expected, got)
+
+		output := RunListCmd(t)
+		expected = "1. [x] Todo A\n2. [ ] Todo B\n"
+		got = output.String()
+		testutils.AssertEqual(t, expected, got)
+	})
 }

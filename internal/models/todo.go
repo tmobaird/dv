@@ -22,6 +22,14 @@ func (todo *Todo) ToMd() string {
 	return fmt.Sprintf("- [%s] %s\n", completeChar, todo.Name)
 }
 
+func (todo *Todo) Status() string {
+	if todo.Complete {
+		return "done"
+	} else {
+		return "not done"
+	}
+}
+
 func GetAllTodos(filename string) ([]Todo, error) {
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {

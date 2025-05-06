@@ -9,16 +9,14 @@ import (
 )
 
 func init() {
-	ListCmd.Flags().BoolVarP(&All, "all", "a", false, "Show all")
-	rootCmd.AddCommand(ListCmd)
+	rootCmd.AddCommand(MarkCmd)
 }
 
-var All bool
-var ListCmd = &cobra.Command{
-	Use:     "list",
-	Aliases: []string{"ls"},
-	Short:   "List todos for space",
-	Long:    `TODO`,
+var MarkCmd = &cobra.Command{
+	Use:     "mark [index] [done|d|not-done|not]",
+	Aliases: []string{"m"},
+	Short:   "Update a todo's current status (done, not done)",
+	Long:    "Update a todo's current status (done, not done)",
 	Run: func(cmd *cobra.Command, args []string) {
 		config, err := internal.Read(os.DirFS(internal.BasePath()))
 		if err != nil {
@@ -26,10 +24,7 @@ var ListCmd = &cobra.Command{
 			return
 		}
 
-		if All {
-			config.HideCompleted = false
-		}
-		result, err := controllers.ListController{Base: controllers.Controller{Args: args, Config: config}}.Run()
+		result, err := controllers.MarkController{Base: controllers.Controller{Args: args, Config: config}}.Run()
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {
