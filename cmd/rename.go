@@ -14,9 +14,10 @@ func init() {
 
 var RenameCmd = &cobra.Command{
 	Use:     "rename [index] [new-name]",
-	Aliases: []string{"mv"},
 	Short:   "Renames an existing item in the todo list",
-	Long:    `Renames an existing todo in the list in your current context. Simply pass the index of the todo and a string to this command to update the name.`,
+	Long:    "Renames an existing todo in the list in your current context. Simply pass the index of the todo and a string to this command to update the name.",
+	Aliases: []string{"mv"},
+	Args:    cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		config, err := internal.Read(os.DirFS(internal.BasePath()))
 		if err != nil {

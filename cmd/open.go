@@ -16,7 +16,8 @@ func init() {
 var OpenCmd = &cobra.Command{
 	Use:   "open",
 	Short: "Open current todo list for editing",
-	Long:  `Open current todo list for editing. Relies on $EDITOR to open the current todo list in your editor of choice. The list will be written in markdown.`,
+	Long:  "Open current todo list for editing. Relies on $EDITOR to open the current todo list in your editor of choice. The list will be written in markdown.",
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		if os.Getenv("EDITOR") == "" {
 			cmd.OutOrStderr().Write([]byte("Must set $EDITOR to edit config"))

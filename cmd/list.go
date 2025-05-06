@@ -16,9 +16,10 @@ func init() {
 var All bool
 var ListCmd = &cobra.Command{
 	Use:     "list",
+	Short:   "List todos for current context",
+	Long:    "List todos for current context. Pass -a or --all to show completed todos.",
 	Aliases: []string{"ls"},
-	Short:   "List todos for space",
-	Long:    `TODO`,
+	Args:    cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		config, err := internal.Read(os.DirFS(internal.BasePath()))
 		if err != nil {

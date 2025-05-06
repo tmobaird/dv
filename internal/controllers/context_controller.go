@@ -6,19 +6,26 @@ import (
 )
 
 type ContextController struct {
-	Base Controller
+	Base            Controller
+	ChangeToDefault bool
 }
 
 func (controller ContextController) Run() (string, error) {
-	if len(controller.Base.Args) > 0 {
-		controller.Base.Config.Context = controller.Base.Args[0]
-		err := internal.PersistConfig(controller.Base.Config)
-		if err != nil {
-			return "", err
-		} else {
-			return fmt.Sprintf("Updated context to %s", controller.Base.Config.Context), nil
-		}
+	if controller.ChangeToDefault {
+		return controller.updateConfig("main")
+	} else if len(controller.Base.Args) > 0 {
+		return controller.updateConfig(controller.Base.Args[0])
 	} else {
 		return controller.Base.Config.Context, nil
+	}
+}
+
+func (controller ContextController) updateConfig(context string) (string, error) {
+	controller.Base.Config.Context = context
+	err := internal.PersistConfig(controller.Base.Config)
+	if err != nil {
+		return "", err
+	} else {
+		return fmt.Sprintf("Updated context to %s", context), nil
 	}
 }

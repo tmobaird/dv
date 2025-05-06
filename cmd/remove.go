@@ -14,9 +14,10 @@ func init() {
 
 var RemoveCmd = &cobra.Command{
 	Use:     "remove [index]",
-	Aliases: []string{"rm"},
 	Short:   "Remove a todo from list",
-	Long:    `Removes a todo from the list in your current context. Simply pass the index of the todo in the list.`,
+	Long:    "Removes a todo from the list in your current context. Simply pass the index of the todo in the list.",
+	Aliases: []string{"rm"},
+	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		config, err := internal.Read(os.DirFS(internal.BasePath()))
 		if err != nil {
