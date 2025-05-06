@@ -14,9 +14,10 @@ func init() {
 
 var MarkCmd = &cobra.Command{
 	Use:     "mark [index] [done|d|not-done|not]",
+	Short:   "Update a todo's current status",
+	Long:    "Update a todo's current status (done, d, not-done, not)",
 	Aliases: []string{"m"},
-	Short:   "Update a todo's current status (done, not done)",
-	Long:    "Update a todo's current status (done, not done)",
+	Args:    cobra.ExactArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		config, err := internal.Read(os.DirFS(internal.BasePath()))
 		if err != nil {

@@ -18,8 +18,9 @@ func init() {
 var Edit bool
 var ConfigCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Get current config",
-	Long:  `TODO`,
+	Short: "Shows the current config.",
+	Long:  "By default shows the current config. When --edit is passed, it will open the config file in your current $EDITOR.",
+	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		if Edit {
 			if os.Getenv("EDITOR") == "" {

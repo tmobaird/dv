@@ -11,9 +11,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "td",
 	Short: "td is a todo list manager",
-	Long: `A Fast and Flexible Static Site Generator built with
-				  love by spf13 and friends in Go.
-				  Complete documentation is available at http://hugo.spf13.com`,
+	Long: "TD is a simple todo list manager that supports multiple lists, todo statuses, and AI-based scheduling.\nThis tool allows users to manage and optimize their time.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
