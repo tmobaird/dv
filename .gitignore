@@ -6,3 +6,5 @@ build
 *.tar.gz
 .vscode
 .td/*
+credentials.json
+td-cli-459014-e217d96f98b6.json
