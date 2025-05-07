@@ -5,3 +5,4 @@ coverage.out
 build
 *.tar.gz
 .vscode
+.td/*
