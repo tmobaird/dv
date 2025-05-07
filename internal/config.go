@@ -5,6 +5,8 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"os/user"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -14,10 +16,15 @@ type Config struct {
 	HideCompleted bool   `yaml:"hideCompleted"`
 }
 
+func (config Config) IsBlank() bool {
+	return config.Context == "" && !config.HideCompleted
+}
+
 const FILENAME = "config.yaml"
 
 func BasePath() string {
-	dirname := ".td"
+	usr, _ := user.Current()
+	dirname := filepath.Join(usr.HomeDir, ".td")
 	if os.Getenv("TD_BASE_PATH") != "" {
 		dirname = os.Getenv("TD_BASE_PATH")
 	}
@@ -65,6 +72,10 @@ func Read(fileSystem fs.FS) (Config, error) {
 		err = yaml.Unmarshal(yamlFile, &config)
 		if err != nil {
 			return Config{}, err
+		}
+
+		if config.IsBlank() {
+			config = DefaultConfig()
 		}
 
 		return config, nil

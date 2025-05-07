@@ -11,29 +11,31 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "td",
 	Short: "td is a todo list manager",
-	Long: "TD is a simple todo list manager that supports multiple lists, todo statuses, and AI-based scheduling.\nThis tool allows users to manage and optimize their time.",
+	Long:  "TD is a simple todo list manager that supports multiple lists, todo statuses, and AI-based scheduling.\nThis tool allows users to manage and optimize their time.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
 }
 
 func loadConfig() error {
-	dirname := ".td"
+	dirname := internal.BasePath()
 	if os.Getenv("TD_BASE_PATH") != "" {
 		dirname = os.Getenv("TD_BASE_PATH")
 	}
 	config, err := internal.Read(os.DirFS(dirname))
-
 	if err != nil {
 		return err
 	}
 
-	file, err := os.OpenFile(internal.ConfigFilePath(), os.O_CREATE, 0644)
+	err = os.MkdirAll(dirname, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	internal.Save(file, config)
+	err = internal.PersistConfig(config)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
