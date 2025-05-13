@@ -5,13 +5,49 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"td/internal"
 )
 
+type TodoType int
+
+const (
+	Blank TodoType = iota
+	Deep
+	Shallow
+	Quick
+)
+
+func GetTodoType(num TodoType) string {
+	switch num {
+	case 0:
+		return "Blank"
+	case 1:
+		return "Deep"
+	case 2:
+		return "Shallow"
+	case 3:
+		return "Quick"
+	default:
+		return ""
+	}
+}
+
+const MINUTE_UNIT = "minute"
+const HOUR_UNIT = "hour"
+const BLOCK_UNIT = "block"
+
+type Metadata struct {
+	DurationValue int
+	DurationUnit  string
+	Type          TodoType
+}
+
 type Todo struct {
 	Name     string
 	Complete bool
+	Metadata Metadata
 }
 
 func (todo *Todo) ToMd() string {
@@ -64,11 +100,15 @@ func WriteTodos(context string, todos []Todo) error {
 	return nil
 }
 
+func DefaultMetadata() Metadata {
+	return Metadata{DurationValue: 1, DurationUnit: BLOCK_UNIT, Type: Blank}
+}
+
 func parseTodos(bytes []byte) []Todo {
 	todos := []Todo{}
 	data := string(bytes)
-	initialRegex := regexp.MustCompile("^- .*")              // checks to make sure it is a valid list item
-	partsRegex := regexp.MustCompile(`^- \[([^\]]+)\] (.*)`) // captures complete and name
+	initialRegex := regexp.MustCompile("^- .*")                                   // checks to make sure it is a valid list item
+	partsRegex := regexp.MustCompile(`^- \[([^\]]+)\] (.*?)\s*(?:\(([^)]*)\))?$`) // captures complete and name
 	for _, line := range strings.Split(data, "\n") {
 		if initialRegex.Match([]byte(line)) {
 			parts := partsRegex.FindStringSubmatch(line)
@@ -78,7 +118,12 @@ func parseTodos(bytes []byte) []Todo {
 					complete = true
 				}
 
-				todos = append(todos, Todo{Name: parts[2], Complete: complete})
+				name := strings.TrimSpace(parts[2])
+				metadata := DefaultMetadata()
+				if len(parts) >= 4 {
+					metadata = parseMetadata(parts[3])
+				}
+				todos = append(todos, Todo{Name: name, Complete: complete, Metadata: metadata})
 			}
 		}
 	}
@@ -95,4 +140,65 @@ func FilterTodos(todos []Todo, hideCompleted bool) []Todo {
 		}
 	}
 	return result
+}
+
+func parseMetadata(metadataString string) Metadata {
+	metadata := DefaultMetadata()
+	attrs := strings.Split(metadataString, ",")
+	for _, attr := range attrs {
+		if strings.Contains(attr, "=") {
+			parts := strings.Split(attr, "=")
+			key := parts[0]
+			value := parts[1]
+
+			if key == "duration" {
+				value, unit, err := parseDuration(value)
+				if err == nil {
+					metadata.DurationValue = value
+					metadata.DurationUnit = unit
+				}
+			} else if key == "type" {
+				metadata.Type = parseType(value)
+			}
+		}
+	}
+	return metadata
+}
+
+func parseDuration(durationString string) (int, string, error) {
+	regex := regexp.MustCompile(`^([0-9]+)([h,m,b]{1})`)
+	parts := regex.FindStringSubmatch(durationString)
+	if len(parts) < 3 {
+		return -1, "", fmt.Errorf("expected 2 parts, found %d", len(parts))
+	}
+
+	num, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return -1, "", fmt.Errorf("expected a valid number, got %s", err.Error())
+	}
+
+	var units string
+	switch parts[2] {
+	case "h":
+		units = HOUR_UNIT
+	case "b":
+		units = BLOCK_UNIT
+	case "m":
+		units = MINUTE_UNIT
+	default:
+		return -1, "", fmt.Errorf("expected units of one of the following: [h,b,m], got %s", parts[1])
+	}
+
+	return num, units, nil
+}
+
+func parseType(typeString string) TodoType {
+	if typeString == "deep" {
+		return Deep
+	} else if typeString == "shallow" {
+		return Shallow
+	} else if typeString == "quick" {
+		return Quick
+	}
+	return Blank
 }

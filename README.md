@@ -61,6 +61,11 @@ Use "td [command] --help" for more information about a command.
   td schedule --generate   # refreshes the last schedule
   ```
 
+# Schedule Brainstorming
+
+- Command Ideas:
+  - calendar and schedule
+
 ### LLM Prompt Ideas
 
 Schedule should have an LLM and Calendar integration something like:
@@ -92,3 +97,25 @@ interface ScheduledTask {
 A single task can have multiple entries, if the suggested approach is breaking them up over multiple blocks.
 The list should be sorted based on time.
 ```
+
+# Todo
+
+```
+type Todo {
+  Name string
+  Completed bool
+  Metadata Metadata
+}
+
+type Metadata {
+  durationValue: int
+  durationUnit: string
+  duration: 100s/10m/1h/1b (b = blocks, 1 block = 30 min)
+  type: deep/shallow/quick
+  tags: <anything>
+}
+```
+
+When we schedule we use the duration or type to infer duration needed.
+
+duration will be an integer representing minutes.
