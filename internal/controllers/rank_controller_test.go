@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"td/internal"
@@ -29,7 +30,7 @@ func TestRankController(t *testing.T) {
 		testutils.AssertNoError(t, err)
 		data, err := io.ReadAll(file)
 		testutils.AssertNoError(t, err)
-		testutils.AssertEqual(t, "- [ ] Two\n- [x] One\n- [ ] Three\n", string(data))
+		testutils.AssertEqual(t, fmt.Sprintf("- [ ] Two %s\n- [x] One %s\n- [ ] Three %s\n", METADATA_STRING, METADATA_STRING, METADATA_STRING), string(data))
 	})
 
 	t.Run("Run ranks todo correctly hideCompleted true", func(t *testing.T) {
@@ -52,7 +53,7 @@ func TestRankController(t *testing.T) {
 		testutils.AssertNoError(t, err)
 		data, err := io.ReadAll(file)
 		testutils.AssertNoError(t, err)
-		testutils.AssertEqual(t, "- [x] One\n- [ ] Three\n- [ ] Two\n", string(data))
+		testutils.AssertEqual(t, fmt.Sprintf("- [x] One %s\n- [ ] Three %s\n- [ ] Two %s\n", METADATA_STRING, METADATA_STRING, METADATA_STRING), string(data))
 	})
 
 	t.Run("Run returns an error when target index is out of range", func(t *testing.T) {

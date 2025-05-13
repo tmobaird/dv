@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"os"
 	"td/internal"
 	"td/internal/testutils"
@@ -23,7 +24,7 @@ func TestMarkController(t *testing.T) {
 
 		testutils.AssertNoError(t, err)
 		testutils.AssertEqual(t, "\"Two\" marked done.", got)
-		testutils.FileContentEquals(t, "- [x] One\n- [x] Two\n", file)
+		testutils.FileContentEquals(t, fmt.Sprintf("- [x] One %s\n- [x] Two %s\n", METADATA_STRING, METADATA_STRING), file)
 	})
 
 	t.Run("Run marks todo as done when hideCompleted is true", func(t *testing.T) {
@@ -41,7 +42,7 @@ func TestMarkController(t *testing.T) {
 
 		testutils.AssertNoError(t, err)
 		testutils.AssertEqual(t, "\"Two\" marked done.", got)
-		testutils.FileContentEquals(t, "- [x] One\n- [x] Two\n", file)
+		testutils.FileContentEquals(t, fmt.Sprintf("- [x] One %s\n- [x] Two %s\n", METADATA_STRING, METADATA_STRING), file)
 	})
 
 	t.Run("Run marks todo as done when given d", func(t *testing.T) {
@@ -59,7 +60,7 @@ func TestMarkController(t *testing.T) {
 
 		testutils.AssertNoError(t, err)
 		testutils.AssertEqual(t, "\"One\" marked done.", got)
-		testutils.FileContentEquals(t, "- [x] One\n", file)
+		testutils.FileContentEquals(t, fmt.Sprintf("- [x] One %s\n", METADATA_STRING), file)
 	})
 
 	t.Run("Run marks todo as not done when given not-done", func(t *testing.T) {
@@ -78,7 +79,7 @@ func TestMarkController(t *testing.T) {
 		testutils.AssertNoError(t, err)
 		testutils.AssertEqual(t, "\"One\" marked not done.", got)
 
-		testutils.FileContentEquals(t, "- [ ] One\n", file)
+		testutils.FileContentEquals(t, fmt.Sprintf("- [ ] One %s\n", METADATA_STRING), file)
 	})
 
 	t.Run("Run marks todo as not done when given not-done", func(t *testing.T) {

@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"td/cmd"
 	"td/internal"
 	"td/internal/testutils"
 	"testing"
+	"time"
 )
 
 func TestIntegration(t *testing.T) {
@@ -208,6 +210,32 @@ func TestIntegration(t *testing.T) {
 		output := RunListCmd(t)
 		expected = "1. [x] Todo A\n2. [ ] Todo B\n"
 		got = output.String()
+		testutils.AssertEqual(t, expected, got)
+	})
+
+	t.Run("td schedule", func(t *testing.T) {
+		configFile := CreateConfigFile(t)
+		defer Cleanup(configFile.Name())
+		config := internal.Config{Context: "main"}
+		internal.Save(configFile, config)
+
+		dirname := CreateListsDirectory(t)
+		defer os.RemoveAll(dirname)
+		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] Todo A\n- [ ] Todo B\n")
+
+		rootCmd, outputBuf := SetupCmd(cmd.ScheduleCmd)
+		rootCmd.SetArgs([]string{"schedule", "--no-calendar"})
+		ExecuteCmd(t, rootCmd)
+
+		expected := fmt.Sprintf(
+			"Here is your schedule for %s\n%s-%s: Todo A\n%s-%s: Todo B\n",
+			time.Now().Format(time.DateOnly),
+			time.Now().Format(time.Kitchen),
+			time.Now().Add(30*time.Minute).Format(time.Kitchen),
+			time.Now().Add(30*time.Minute).Format(time.Kitchen),
+			time.Now().Add(60*time.Minute).Format(time.Kitchen),
+		)
+		got := outputBuf.String()
 		testutils.AssertEqual(t, expected, got)
 	})
 }

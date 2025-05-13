@@ -61,34 +61,40 @@ Use "td [command] --help" for more information about a command.
   td schedule --generate   # refreshes the last schedule
   ```
 
-### LLM Prompt Ideas
+### Todo Metadata
 
-Schedule should have an LLM and Calendar integration something like:
+To make scheduling easier td supports optional metadata associated with a todo.
+The metadata is a key/value pair format, with an allowed list of keys.
+The following metadata keys are allowed:
+- duration (a number + interval indicator to express time. Example: `10m` == 10 minutes. Supported units: `m, b, h` - m = minutes, b = blocks (1 block = 30 min), and h = hours) (default = 1b = 30 minutes)
+- type (Supported: `deep, shallow, quick`. Only deep has an impact on scheduling today.)
+
+To add these pieces of metadata, simply encode them as a comma separated list where the key/value pair is separated by `=`.
+For example:
 
 ```
-Here are my tasks and some notes about them for today (ordered based on importance):
-- task 1
-- task 2
-- task 3
-
-Here is my calendar for today (you can assume not accounted for time is free time):
-- 9-9:30 AM Standup
-- 11:45 - 12:45 PM Meeting
-- 12:45 - 1:30 PM Lunch
-
-Generate a schedule for my tasks, when I should do them and in what order.
-The logic should try to factor in the following:
-- Prioritization (ordering)
-- Time necessary (if duration not estimated in work notes, assume anywhere between 30-90 minutes)
-
-Return the results in the following structure:
-interface ScheduledTask {
-  name: string,
-  id: string,
-  start_time: datetime,
-  end_time: datetime
-}[]
-
-A single task can have multiple entries, if the suggested approach is breaking them up over multiple blocks.
-The list should be sorted based on time.
+- [ ] Do Homework (duration=10m,type=deep)
 ```
+
+Will be parsed to have a duration of 10 minutes and a type of deep.
+Both fields, and the metadata entirely can be left blank if desired.
+
+### Scheduling
+
+To run the scheduler use the following:
+
+```
+td schedule
+```
+
+The scheduler has 2 potential inputs: the todo list in your current context and your calendar.
+Every todo has a priority (the order in the list) and a duration (see #todo-metadata for details about this).
+The scheduler will follow a few rules when scheduling items:
+1. The day of scheduling starts when the `schedule` command is run and ends at 6:30 PM (TODO: make this configurable).
+2. Calendar events are always honored or seen as must schedule at the exact time.
+  - This means that if you have an invite for 10-10:30 AM, the scheduler will never schedule anything else in the 10-10:30 AM window.
+3. Deep work is prioritized during the first 1/3 of the day. During the beginning parts of our day we have more energy that can sometimes be required for deeper level tasks. Therefore in the first 1/3 of the day we will prioritize this deep work. We only use 1/3 of the day for this to leave time for the majority of potentially higher priority todos.
+4. Outside of #3, todos are scheduled in priority order of where they appear in the todo list.
+5. Scheduled todos that are broken up by meetings will have their duration be split as well.
+
+**The only current supported calendar is Gmail. This will be improved soon.**

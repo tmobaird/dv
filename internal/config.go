@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"time"
 
 	"gopkg.in/yaml.v3"
 )
@@ -38,6 +39,14 @@ func ConfigFilePath() string {
 
 func TodoFilePath(context string) string {
 	return fmt.Sprintf("%s/lists/%s.md", BasePath(), context)
+}
+
+func ScheduleDirectoryPath() string {
+	return fmt.Sprintf("%s/schedules", BasePath())
+}
+
+func ScheduleFilePath(d time.Time) string {
+	return fmt.Sprintf("%s/%s.md", ScheduleDirectoryPath(), d.Format(time.DateOnly))
 }
 
 func FileExists(fileSystem fs.FS) bool {
