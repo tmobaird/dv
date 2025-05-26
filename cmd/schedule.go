@@ -19,7 +19,6 @@ var ScheduleCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		result, err := controllers.ScheduleController{Base: controllers.Controller{Args: args}, Regenerate: Regenerate}.Run()
-		// event := models.CalendarEvent{StartTime: time.Now().Add(time.Minute * 5), EndTime: time.Now().Add(time.Minute * 30), Event: &calendar.Event{Summary: "Do this now!!!!"}}
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {

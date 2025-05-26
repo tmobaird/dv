@@ -78,14 +78,18 @@ func (todo *Todo) Status() string {
 	}
 }
 
-func (todo *Todo) Duration() time.Duration {
-	if todo.Metadata.DurationUnit == MINUTE_UNIT {
-		return time.Duration(todo.Metadata.DurationValue) * time.Minute
-	} else if todo.Metadata.DurationUnit == HOUR_UNIT {
-		return time.Duration(todo.Metadata.DurationValue) * time.Hour
+func unitToDuration(unit string, value int) time.Duration {
+	if unit == MINUTE_UNIT {
+		return time.Duration(value) * time.Minute
+	} else if unit == HOUR_UNIT {
+		return time.Duration(value) * time.Hour
 	} else {
-		return time.Duration(todo.Metadata.DurationValue) * (time.Minute * 30)
+		return time.Duration(value) * (time.Minute * 30)
 	}
+}
+
+func (todo *Todo) Duration() time.Duration {
+	return unitToDuration(todo.Metadata.DurationUnit, todo.Metadata.DurationValue)
 }
 
 func (todo Todo) Output() string {
