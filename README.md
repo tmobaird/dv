@@ -119,3 +119,92 @@ type Metadata {
 When we schedule we use the duration or type to infer duration needed.
 
 duration will be an integer representing minutes.
+
+## How do I schedule tasks for my work?
+
+I have a list of tasks to do
+I have a basic understanding of:
+- how long each task will take
+- what level of focus is required for each
+- how urgent each task is
+
+When I schedule, I will use the following rules:
+- Try to do deep focus work as early as possible
+- Try to break up deep focus work as minimally as possible
+- Non deep focus work can be broken up if necessary
+- Ideally more urgent work is scheduled first
+- I only spend as much time as necessary on a task
+- Sometimes I need a buffer of 15-30 minutes upon completing a task
+
+Ordering:
+- How do we choose between deep work and ordered work?
+  - Deep work in the first 1/3 gets prioritized in first part of day (first 10 blocks)
+  - Order is rank based after that
+
+Continuous work:
+- Deep work is NEVER broken up
+- Non-deep work can be broken up
+
+### Flow
+
+9
+10 = meeting
+11
+12
+1
+2
+
+windows = [
+  9-10(free),
+  10-11(meeting),
+  11-3(free)
+]
+
+FUNCTION find_task(available [], possible_duration int, prioritize_deep_work bool) (int, int, error):
+  var selected
+  IF prioritize_deep_work:
+    for i = 0; i < available.size / 3; i++:
+      if available[i] == deep_work && (available[i].duration <= possible_duration || possible_duration == -1):
+        SET selected = available[i]
+  
+  IF selected == nil:
+    return available.first
+  ELSE:
+    return selected
+
+
+SET tasks = []
+SET task_bank = {id:minutesLeft}
+OR
+SET to_schedule = list of todos in order of rank // remove from list when scheduled
+SET start_time = now
+SET schedule = []
+WHILE to_schedule.length > 0 && start_time > 5:30PM
+  IF calendar.length > 0
+    SET time_to_meeting = calendar.first.start_time - start_time
+    find_task(possible_duration=time_to_meeting)
+    // remove task from schedulable pool
+  ELSE
+    find_task(possible_duration=-1)
+    // remove task from schedulable pool
+  END
+
+  SET start_time = scheduled_task.end_time
+END
+
+
+
+FOR window in windows:
+  if event then:
+    schedule.push event
+  else
+    var scheduled
+    if window in first 10 blocks:
+      for i = 0; i < to_schedule.size / 3; i++:
+        set scheduled=to_schedule[i]
+        if scheduled is deep work:
+    if scheduled == nil:
+      scheduled = to_schedule[0]
+      to_schedule.pop
+    if scheduled:
+      schedule.push scheduled, start=window.start, end=window.start+scheduled.duration

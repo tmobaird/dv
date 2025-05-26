@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"td/internal"
+	"time"
 )
 
 type TodoType int
@@ -22,15 +23,26 @@ const (
 func GetTodoType(num TodoType) string {
 	switch num {
 	case 0:
-		return "Blank"
+		return "blank"
 	case 1:
-		return "Deep"
+		return "deep"
 	case 2:
-		return "Shallow"
+		return "shallow"
 	case 3:
-		return "Quick"
+		return "quick"
 	default:
 		return ""
+	}
+}
+
+func GetDurationEncodedUnit(unit string) string {
+	switch unit {
+	case MINUTE_UNIT:
+		return "m"
+	case HOUR_UNIT:
+		return "h"
+	default:
+		return "b"
 	}
 }
 
@@ -55,7 +67,7 @@ func (todo *Todo) ToMd() string {
 	if todo.Complete {
 		completeChar = "x"
 	}
-	return fmt.Sprintf("- [%s] %s\n", completeChar, todo.Name)
+	return fmt.Sprintf("- [%s] %s (duration=%d%s,type=%s)\n", completeChar, todo.Name, todo.Metadata.DurationValue, GetDurationEncodedUnit(todo.Metadata.DurationUnit), GetTodoType(todo.Metadata.Type))
 }
 
 func (todo *Todo) Status() string {
@@ -64,6 +76,20 @@ func (todo *Todo) Status() string {
 	} else {
 		return "not done"
 	}
+}
+
+func (todo *Todo) Duration() time.Duration {
+	if todo.Metadata.DurationUnit == MINUTE_UNIT {
+		return time.Duration(todo.Metadata.DurationValue) * time.Minute
+	} else if todo.Metadata.DurationUnit == HOUR_UNIT {
+		return time.Duration(todo.Metadata.DurationValue) * time.Hour
+	} else {
+		return time.Duration(todo.Metadata.DurationValue) * (time.Minute * 30)
+	}
+}
+
+func (todo Todo) Output() string {
+	return todo.Name
 }
 
 func GetAllTodos(filename string) ([]Todo, error) {

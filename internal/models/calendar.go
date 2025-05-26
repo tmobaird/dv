@@ -22,6 +22,10 @@ type Calendar struct {
 	End    time.Time
 }
 
+func (calendarEvent CalendarEvent) Output() string {
+	return calendarEvent.Event.Summary
+}
+
 func GetTodaysCalendar(client *http.Client, ctx context.Context) (Calendar, error) {
 	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))
 	if err != nil {
@@ -60,5 +64,19 @@ func endOfDay(t time.Time) time.Time {
 	location, _ := time.LoadLocation("Local")
 	year, month, day := t.In(location).Date()
 	t = time.Date(year, month, day, 23, 59, 59, 0, location)
+	return t
+}
+
+func startOfWorkday(t time.Time) time.Time {
+	location, _ := time.LoadLocation("Local")
+	year, month, day := t.In(location).Date()
+	t = time.Date(year, month, day, 8, 30, 0, 0, location)
+	return t
+}
+
+func endOfWorkday(t time.Time) time.Time {
+	location, _ := time.LoadLocation("Local")
+	year, month, day := t.In(location).Date()
+	t = time.Date(year, month, day, 18, 30, 0, 0, location)
 	return t
 }
