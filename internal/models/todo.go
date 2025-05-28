@@ -151,7 +151,7 @@ func parseTodos(bytes []byte) []Todo {
 				name := strings.TrimSpace(parts[2])
 				metadata := DefaultMetadata()
 				if len(parts) >= 4 {
-					metadata = parseMetadata(parts[3])
+					metadata = ParseTodoMetadata(parts[3])
 				}
 				todos = append(todos, Todo{Name: name, Complete: complete, Metadata: metadata})
 			}
@@ -172,7 +172,7 @@ func FilterTodos(todos []Todo, hideCompleted bool) []Todo {
 	return result
 }
 
-func parseMetadata(metadataString string) Metadata {
+func ParseTodoMetadata(metadataString string) Metadata {
 	metadata := DefaultMetadata()
 	attrs := strings.Split(metadataString, ",")
 	for _, attr := range attrs {

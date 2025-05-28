@@ -221,6 +221,7 @@ func TestIntegration(t *testing.T) {
 
 		dirname := CreateListsDirectory(t)
 		defer os.RemoveAll(dirname)
+		defer os.RemoveAll("tmp/schedules")
 		CreateTodosFile(t, "tmp/lists/main.md", "- [ ] Todo A\n- [ ] Todo B\n")
 
 		rootCmd, outputBuf := SetupCmd(cmd.ScheduleCmd)

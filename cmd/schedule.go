@@ -8,7 +8,7 @@ import (
 
 func init() {
 	ScheduleCmd.Flags().BoolVarP(&Regenerate, "regenerate", "r", false, "Regenerate")
-	ScheduleCmd.Flags().BoolVarP(&NoCalendar, "no-calendar", "n", false, "Don't use gmail calendar")
+	ScheduleCmd.Flags().BoolVar(&NoCalendar, "no-calendar", false, "Don't use gmail calendar")
 	rootCmd.AddCommand(ScheduleCmd)
 }
 

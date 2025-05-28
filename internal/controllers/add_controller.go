@@ -8,7 +8,8 @@ import (
 )
 
 type AddController struct {
-	Base Controller
+	Base           Controller
+	MetadataString string
 }
 
 func (controller AddController) Run() (string, error) {
@@ -17,7 +18,7 @@ func (controller AddController) Run() (string, error) {
 		return "", err
 	}
 	defer file.Close()
-	todo := models.Todo{Name: controller.Base.Args[0], Complete: false, Metadata: models.DefaultMetadata()}
+	todo := models.Todo{Name: controller.Base.Args[0], Complete: false, Metadata: models.ParseTodoMetadata(controller.MetadataString)}
 	toWrite := todo.ToMd()
 	_, err = file.Write([]byte(toWrite))
 	if err != nil {

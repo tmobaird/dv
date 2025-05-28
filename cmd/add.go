@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"td/internal"
 	"td/internal/controllers"
@@ -9,9 +10,13 @@ import (
 )
 
 func init() {
+	AddCmd.Flags().StringVarP(&Duration, "duration", "d", "1b", "Estimated duration of todo")
+	AddCmd.Flags().StringVarP(&Type, "type", "t", "blank", "Set the type of todo")
 	rootCmd.AddCommand(AddCmd)
 }
 
+var Duration string
+var Type string
 var AddCmd = &cobra.Command{
 	Use:   "add [name]",
 	Short: "Add a new todo to list",
@@ -24,7 +29,8 @@ var AddCmd = &cobra.Command{
 			return
 		}
 
-		result, err := controllers.AddController{Base: controllers.Controller{Args: args, Config: config}}.Run()
+		metadataString := fmt.Sprintf("duration=%s,type=%s", Duration, Type)
+		result, err := controllers.AddController{Base: controllers.Controller{Args: args, Config: config}, MetadataString: metadataString}.Run()
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {

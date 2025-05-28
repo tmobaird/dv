@@ -86,7 +86,7 @@ func generateSchedule(start time.Time, events []CalendarEvent, context string) (
 		todo, index, err := findTodo(todos, todoBank, availableTime, prioritizeDeepWork)
 
 		if err != nil {
-			schedule.Items = append(schedule.Items, ScheduleItem{Item: upcomingEvent, Start: upcomingEvent.StartTime, End: upcomingEvent.EndTime})
+			schedule.Items = append(schedule.Items, scheduleItemForEvent(upcomingEvent))
 			events = events[1:]
 			start = upcomingEvent.EndTime
 		} else {
@@ -97,9 +97,9 @@ func generateSchedule(start time.Time, events []CalendarEvent, context string) (
 				addUpcomingEvent = true
 			}
 
-			schedule.Items = append(schedule.Items, ScheduleItem{Item: todo, Start: start, End: start.Add(updateBankDuration)})
+			schedule.Items = append(schedule.Items, scheduleItemForTodo(todo, start, updateBankDuration))
 			if addUpcomingEvent {
-				schedule.Items = append(schedule.Items, ScheduleItem{Item: upcomingEvent, Start: upcomingEvent.StartTime, End: upcomingEvent.EndTime})
+				schedule.Items = append(schedule.Items, scheduleItemForEvent(upcomingEvent))
 				events = events[1:]
 				start = upcomingEvent.EndTime
 			} else {
@@ -107,6 +107,11 @@ func generateSchedule(start time.Time, events []CalendarEvent, context string) (
 			}
 			updateBank(index, updateBankDuration, todoBank)
 		}
+	}
+
+	for len(events) > 0 {
+		schedule.Items = append(schedule.Items, scheduleItemForEvent(events[0]))
+		events = events[1:]
 	}
 
 	return schedule, nil
@@ -145,4 +150,12 @@ func findTodo(todos []Todo, todoBank map[int]time.Duration, maxDuration time.Dur
 	}
 
 	return Todo{}, -1, errors.New("failed to find a todo")
+}
+
+func scheduleItemForTodo(todo Todo, start time.Time, duration time.Duration) ScheduleItem {
+	return ScheduleItem{Item: todo, Start: start, End: start.Add(duration)}
+}
+
+func scheduleItemForEvent(event CalendarEvent) ScheduleItem {
+	return ScheduleItem{Item: event, Start: event.StartTime, End: event.EndTime}
 }
