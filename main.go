@@ -1,7 +1,20 @@
 package main
 
-import "td/cmd"
+import (
+	"github.com/spf13/cobra"
+	"github.com/tmobaird/dv/td"
+)
+
+var rootCmd = &cobra.Command{
+	Use:   "dv",
+	Short: "dv is a developer tools cli",
+	Long:  "replace me",
+	Run: func(cmd *cobra.Command, args []string) {
+		cmd.Help()
+	},
+}
 
 func main() {
-	cmd.Execute()
+	rootCmd.AddCommand(td.TdCommand())
+	rootCmd.Execute()
 }

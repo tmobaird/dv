@@ -1,6 +1,8 @@
 todo-cli
 td
-tmp
+!td/
+tmp/*
+!tmp/.keep
 coverage.out
 build
 *.tar.gz
