@@ -8,7 +8,8 @@ import (
 )
 
 type ListController struct {
-	Base Controller
+	Base         Controller
+	ShowMetadata bool
 }
 
 func (controller ListController) Run() (string, error) {
@@ -27,7 +28,7 @@ func (controller ListController) Run() (string, error) {
 	if len(todos) > 0 {
 		result := ""
 		for i, todo := range todos {
-			result += presentTodo(i+1, todo)
+			result += presentTodo(i+1, todo, controller.ShowMetadata)
 		}
 
 		return result, nil
@@ -36,11 +37,21 @@ func (controller ListController) Run() (string, error) {
 	}
 }
 
-func presentTodo(index int, todo models.Todo) string {
+func presentTodo(index int, todo models.Todo, showMetadata bool) string {
 	completechar := " "
 	if todo.Complete {
 		completechar = "x"
 	}
 
-	return fmt.Sprintf("%d. [%s] %s\n", index, completechar, todo.Name)
+	output := fmt.Sprintf("%d. [%s] %s", index, completechar, todo.Name)
+	if showMetadata {
+		output = fmt.Sprintf(
+			"%s (duration=%d%s,type=%s)",
+			output,
+			todo.Metadata.DurationValue,
+			models.GetDurationEncodedUnit(todo.Metadata.DurationUnit),
+			models.GetTodoType(todo.Metadata.Type),
+		)
+	}
+	return output + "\n"
 }

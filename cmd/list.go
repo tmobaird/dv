@@ -10,10 +10,12 @@ import (
 
 func init() {
 	ListCmd.Flags().BoolVarP(&All, "all", "a", false, "Show all")
+	ListCmd.Flags().BoolVar(&ShowMetadata, "metadata", false, "Show todo metadata")
 	rootCmd.AddCommand(ListCmd)
 }
 
 var All bool
+var ShowMetadata bool
 var ListCmd = &cobra.Command{
 	Use:     "list",
 	Short:   "List todos for current context",
@@ -30,7 +32,7 @@ var ListCmd = &cobra.Command{
 		if All {
 			config.HideCompleted = false
 		}
-		result, err := controllers.ListController{Base: controllers.Controller{Args: args, Config: config}}.Run()
+		result, err := controllers.ListController{Base: controllers.Controller{Args: args, Config: config}, ShowMetadata: ShowMetadata}.Run()
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {
