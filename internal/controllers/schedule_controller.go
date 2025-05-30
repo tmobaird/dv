@@ -9,9 +9,6 @@ import (
 	"td/internal/auth"
 	"td/internal/models"
 	"time"
-
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/calendar/v3"
 )
 
 type ScheduleController struct {
@@ -41,15 +38,11 @@ func generate(d time.Time, useCalendar bool) (string, error) {
 
 	if useCalendar {
 		ctx := context.Background()
-		b, err := os.ReadFile("credentials.json") // Downloaded from Google Cloud Console
+		client, err := auth.GetClient(ctx)
 		if err != nil {
 			return "", err
 		}
-		config, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
-		if err != nil {
-			return "", err
-		}
-		client := auth.GetClient(ctx, config)
+
 		cal, err = models.GetTodaysCalendar(client, ctx)
 		if err != nil {
 			return "", errors.New("failed to fetch calendar")

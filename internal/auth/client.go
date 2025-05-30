@@ -13,7 +13,43 @@ import (
 	"runtime"
 
 	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
+	"google.golang.org/api/calendar/v3"
 )
+
+func GetClient(ctx context.Context) (*http.Client, error) {
+	config, err := getConfig()
+	if err != nil {
+		return &http.Client{}, nil
+	}
+
+	tokenFile := tokenCacheFile()
+	tok, err := tokenFromFile(tokenFile)
+
+	if err != nil {
+		client := getTokenForFirstTime(ctx, config)
+		return client, nil
+	}
+
+	return config.Client(ctx, tok), nil
+}
+
+func getConfig() (*oauth2.Config, error) {
+	// Load OAuth 2.0 config from client_secrets.json
+	b, err := os.ReadFile("credentials.json")
+	if err != nil {
+		return &oauth2.Config{}, err
+	}
+
+	// Set the desired scopes
+	config, err := google.ConfigFromJSON(b, calendar.CalendarReadonlyScope)
+
+	if err != nil {
+		return &oauth2.Config{}, err
+	}
+
+	return config, nil
+}
 
 func tokenCacheFile() string {
 	usr, _ := user.Current()
@@ -34,9 +70,9 @@ func tokenFromFile(file string) (*oauth2.Token, error) {
 		return nil, err
 	}
 	defer f.Close()
-	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
+	token := &oauth2.Token{}
+	err = json.NewDecoder(f).Decode(token)
+	return token, err
 }
 
 func openBrowser(url string) error {
@@ -94,17 +130,6 @@ func getTokenForFirstTime(ctx context.Context, config *oauth2.Config) *http.Clie
 		log.Fatalf("Token exchange error: %v", err)
 	}
 	saveToken(tokFile, tok)
-
-	return config.Client(ctx, tok)
-}
-
-func GetClient(ctx context.Context, config *oauth2.Config) *http.Client {
-	tokFile := tokenCacheFile()
-	tok, err := tokenFromFile(tokFile)
-
-	if err != nil {
-		getTokenForFirstTime(ctx, config)
-	}
 
 	return config.Client(ctx, tok)
 }
