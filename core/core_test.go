@@ -77,7 +77,7 @@ func TestConfig(t *testing.T) {
 	})
 
 	t.Run("PersistConfig writes config to file", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		file, err := os.Create("tmp/config.yaml")
 		if err != nil {
 			t.Errorf("Failed to create tmp file %s", err.Error())
@@ -96,7 +96,7 @@ func TestConfig(t *testing.T) {
 	})
 
 	t.Run("PersistConfig does not return an error when having to create the file", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		defer os.Remove("tmp/config.yaml")
 		config := Config{Context: "my-context"}
 		err := PersistConfig(config)

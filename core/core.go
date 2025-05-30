@@ -25,9 +25,9 @@ const FILENAME = "config.yaml"
 
 func BasePath() string {
 	usr, _ := user.Current()
-	dirname := filepath.Join(usr.HomeDir, ".td")
-	if os.Getenv("TD_BASE_PATH") != "" {
-		dirname = os.Getenv("TD_BASE_PATH")
+	dirname := filepath.Join(usr.HomeDir, ".dv")
+	if os.Getenv("DV_BASE_PATH") != "" {
+		dirname = os.Getenv("DV_BASE_PATH")
 	}
 
 	return dirname

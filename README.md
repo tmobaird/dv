@@ -1,4 +1,9 @@
-# TD (Todo CLI)
+# DV (Dev CLI)
+
+The goal of this project is to create a CLI that can control basic devtools that I am using in my development workflow.
+Right now this includes a simple todo list and work log.
+The distribution of this is a CLI so that it can really easily integrate into my development environment: VSCode + Terminal
+
 This is a fun project I am working on to help learn Golang.
 Feature ideas and feedback on the Golang code is welcome 🤝.
 
@@ -8,15 +13,23 @@ Feature ideas and feedback on the Golang code is welcome 🤝.
 
 TODO
 
-### Usage
+### Modules
+
+This project consists of two modules for end usage:
+- TD: Local todo list manager
+- LG: Local developer logs tool
+
+The usage for each is below.
+
+### TD Usage
 
 TD is a simple todo list manager that supports multiple lists, todo statuses, and AI-based scheduling.
 This tool allows users to manage and optimize their time.
 
 ```
 Usage:
-  td [flags]
-  td [command]
+  dv td [flags]
+  dv td [command]
 
 Available Commands:
   add         Add a new todo to list
@@ -34,7 +47,7 @@ Available Commands:
 Flags:
   -h, --help   help for td
 
-Use "td [command] --help" for more information about a command.
+Use "dv td [command] --help" for more information about a command.
 ```
 
 ### Roadmap
@@ -50,8 +63,8 @@ Use "td [command] --help" for more information about a command.
 - [x] rank
 - [x] remove
 - [x] rename
-- [ ] calendar
-- [ ] schedule
+- [x] calendar
+- [x] schedule
   - Type of task
   - Multiple contexts/domains (todo groups)
   - Estimated duration
@@ -84,7 +97,7 @@ Both fields, and the metadata entirely can be left blank if desired.
 To run the scheduler use the following:
 
 ```
-td schedule
+dv td schedule
 ```
 
 The scheduler has 2 potential inputs: the todo list in your current context and your calendar.

@@ -10,7 +10,7 @@ import (
 
 func TestRemoveController(t *testing.T) {
 	t.Run("Run deletes correct todo when hideCompleted false", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -27,7 +27,7 @@ func TestRemoveController(t *testing.T) {
 	})
 
 	t.Run("Run deletes correct todo when hideCompleted true", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -44,7 +44,7 @@ func TestRemoveController(t *testing.T) {
 	})
 
 	t.Run("Run returns an error when index is out of range", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)

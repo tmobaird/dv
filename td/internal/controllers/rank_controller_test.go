@@ -12,7 +12,7 @@ import (
 
 func TestRankController(t *testing.T) {
 	t.Run("Run ranks todo correctly when hideCompleted false", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -35,7 +35,7 @@ func TestRankController(t *testing.T) {
 	})
 
 	t.Run("Run ranks todo correctly hideCompleted true", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -58,7 +58,7 @@ func TestRankController(t *testing.T) {
 	})
 
 	t.Run("Run returns an error when target index is out of range", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -74,7 +74,7 @@ func TestRankController(t *testing.T) {
 	})
 
 	t.Run("Run returns an error when end index is out of range", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)

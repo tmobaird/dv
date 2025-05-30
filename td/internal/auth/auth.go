@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"runtime"
 
+	"github.com/tmobaird/dv/core"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/calendar/v3"
@@ -52,8 +52,7 @@ func getConfig() (*oauth2.Config, error) {
 }
 
 func tokenCacheFile() string {
-	usr, _ := user.Current()
-	tokenCacheDir := filepath.Join(usr.HomeDir, ".td", "credentials")
+	tokenCacheDir := filepath.Join(core.BasePath(), "credentials")
 	os.MkdirAll(tokenCacheDir, 0700)
 	return filepath.Join(tokenCacheDir, "google.json")
 }

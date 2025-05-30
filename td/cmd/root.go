@@ -20,8 +20,8 @@ package cmd
 
 // func loadConfig() error {
 // 	dirname := internal.BasePath()
-// 	if os.Getenv("TD_BASE_PATH") != "" {
-// 		dirname = os.Getenv("TD_BASE_PATH")
+// 	if os.Getenv("DV_BASE_PATH") != "" {
+// 		dirname = os.Getenv("DV_BASE_PATH")
 // 	}
 // 	config, err := internal.Read(os.DirFS(dirname))
 // 	if err != nil {

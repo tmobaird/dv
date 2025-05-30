@@ -11,7 +11,7 @@ import (
 
 func TestAddController(t *testing.T) {
 	t.Run("Run adds new todo", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -28,7 +28,7 @@ func TestAddController(t *testing.T) {
 	})
 
 	t.Run("Run correctly parses metadata string", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)

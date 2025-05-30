@@ -11,7 +11,7 @@ import (
 
 func TestMarkController(t *testing.T) {
 	t.Run("Run marks todo as done when hideCompleted is false", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -29,7 +29,7 @@ func TestMarkController(t *testing.T) {
 	})
 
 	t.Run("Run marks todo as done when hideCompleted is true", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -47,7 +47,7 @@ func TestMarkController(t *testing.T) {
 	})
 
 	t.Run("Run marks todo as done when given d", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -65,7 +65,7 @@ func TestMarkController(t *testing.T) {
 	})
 
 	t.Run("Run marks todo as not done when given not-done", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -84,7 +84,7 @@ func TestMarkController(t *testing.T) {
 	})
 
 	t.Run("Run marks todo as not done when given not-done", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -101,7 +101,7 @@ func TestMarkController(t *testing.T) {
 	})
 
 	t.Run("Run with bad index returns error", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -118,7 +118,7 @@ func TestMarkController(t *testing.T) {
 	})
 
 	t.Run("Run with bad status returns error", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)

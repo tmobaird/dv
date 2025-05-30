@@ -52,7 +52,7 @@ func FileContentEquals(t *testing.T, expected string, file *os.File) {
 func CreateConfigFile(t *testing.T) *os.File {
 	t.Helper()
 
-	os.Setenv("TD_BASE_PATH", "tmp")
+	os.Setenv("DV_BASE_PATH", "tmp")
 	file, err := os.Create("tmp/config.yaml")
 	if err != nil {
 		t.Errorf("Failed to create tmp file %s", err.Error())

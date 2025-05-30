@@ -197,7 +197,7 @@ func CreateTodosSetup(t *testing.T, context string, todos []Todo) string {
 func CreateTodoSetup(t *testing.T, context string, contents []byte) string {
 	t.Helper()
 
-	os.Setenv("TD_BASE_PATH", "tmp")
+	os.Setenv("DV_BASE_PATH", "tmp")
 	dirname := "tmp/lists"
 	err := os.MkdirAll(dirname, 0755)
 	testutils.AssertNoError(t, err)

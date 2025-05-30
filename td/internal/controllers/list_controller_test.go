@@ -10,7 +10,7 @@ import (
 
 func TestListController(t *testing.T) {
 	t.Run("Run returns list of todos when exist", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -27,7 +27,7 @@ func TestListController(t *testing.T) {
 	})
 
 	t.Run("Run returns list that doesnt include misformatted lines", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
@@ -44,7 +44,7 @@ func TestListController(t *testing.T) {
 	})
 
 	t.Run("Run returns list with completed only when Config.HideCompleted = true", func(t *testing.T) {
-		os.Setenv("TD_BASE_PATH", "tmp")
+		os.Setenv("DV_BASE_PATH", "tmp")
 		dirname := "tmp/lists"
 		err := os.MkdirAll(dirname, 0755)
 		testutils.AssertNoError(t, err)
