@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/spf13/cobra"
+	"github.com/tmobaird/dv/lg"
 	"github.com/tmobaird/dv/td"
 )
 
@@ -16,5 +17,6 @@ var rootCmd = &cobra.Command{
 
 func main() {
 	rootCmd.AddCommand(td.TdCommand())
+	rootCmd.AddCommand(lg.LgCommand())
 	rootCmd.Execute()
 }

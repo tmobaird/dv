@@ -1,9 +1,6 @@
 package td
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/tmobaird/dv/td/cmd"
 )
@@ -23,15 +20,4 @@ func TdCommand() *cobra.Command {
 		tdCmd.AddCommand(command)
 	}
 	return tdCmd
-}
-
-func Execute() {
-	// if err := core.LoadConfig(); err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
-	if err := tdCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 }

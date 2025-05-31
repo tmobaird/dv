@@ -49,8 +49,28 @@ func ScheduleFilePath(d time.Time) string {
 	return fmt.Sprintf("%s/%s.md", ScheduleDirectoryPath(), d.Format(time.DateOnly))
 }
 
-func FileExists(fileSystem fs.FS) bool {
-	files, err := fs.ReadDir(fileSystem, ".")
+func LogDirectoryPath() string {
+	return filepath.Join(BasePath(), "logs")
+}
+
+func LogFileName(t time.Time) string {
+	return fmt.Sprintf("%s.md", t.Format("20060102"))
+}
+
+func LogFilePath(t time.Time) string {
+	return filepath.Join(LogDirectoryPath(), LogFileName(t))
+}
+
+func LogFileExists(d time.Time) bool {
+	return FileExists(os.DirFS(LogDirectoryPath()), fmt.Sprintf("%s.md", d.Format("20060102")))
+}
+
+func ConfigFileExists(filesystem fs.FS) bool {
+	return FileExists(filesystem, FILENAME)
+}
+
+func FileExists(filesystem fs.FS, filename string) bool {
+	files, err := fs.ReadDir(filesystem, ".")
 	if err != nil {
 		return false
 	}
@@ -58,7 +78,7 @@ func FileExists(fileSystem fs.FS) bool {
 	found := false
 
 	for _, file := range files {
-		if file.Name() == FILENAME {
+		if file.Name() == filename {
 			found = true
 		}
 	}
@@ -71,7 +91,7 @@ func DefaultConfig() Config {
 }
 
 func ReadConfig(fileSystem fs.FS) (Config, error) {
-	if FileExists(fileSystem) {
+	if ConfigFileExists(fileSystem) {
 		yamlFile, err := fs.ReadFile(fileSystem, FILENAME)
 		if err != nil {
 			return Config{}, err

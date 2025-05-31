@@ -17,7 +17,7 @@ func TestConfig(t *testing.T) {
 		}
 
 		expected := true
-		got := FileExists(filesystem)
+		got := ConfigFileExists(filesystem)
 
 		testutils.AssertEqual(t, expected, got)
 	})
@@ -26,7 +26,7 @@ func TestConfig(t *testing.T) {
 		filesystem := fstest.MapFS{}
 
 		expected := false
-		got := FileExists(filesystem)
+		got := ConfigFileExists(filesystem)
 
 		testutils.AssertEqual(t, expected, got)
 	})
