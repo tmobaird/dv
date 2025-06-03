@@ -7,7 +7,7 @@ The distribution of this is a CLI so that it can really easily integrate into my
 This is a fun project I am working on to help learn Golang.
 Feature ideas and feedback on the Golang code is welcome 🤝.
 
-**Note: These docs have been updated for the upcoming version. If you would like to use 0.0.1, view the instructions [here](https://github.com/tmobaird/td/blob/58f6f37468b30ebfc8db83538deff3c2532b01b7/README.md#installation).
+**Note: These docs have been updated for the upcoming version. If you would like to use 0.0.1, view the instructions [here](https://github.com/tmobaird/td/blob/58f6f37468b30ebfc8db83538deff3c2532b01b7/README.md#installation).**
 
 ### Installation
 
