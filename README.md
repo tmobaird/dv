@@ -73,6 +73,11 @@ Use "dv td [command] --help" for more information about a command.
   td schedule              # shows the schedule or generates it if not saved
   td schedule --generate   # refreshes the last schedule
   ```
+- [ ] LG Enhancements
+  - [ ] write
+  - [ ] show
+  - [ ] log
+  - [ ] template files
 
 ### Todo Metadata
 
