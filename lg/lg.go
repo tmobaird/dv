@@ -8,7 +8,7 @@ import (
 var lgCmd = &cobra.Command{
 	Use:   "lg",
 	Short: "lg is a developer log system",
-	Long:  "TODO",
+	Long:  "lg is a daily developer logging system. The full intention behind this can be found here: https://github.com/tmobaird/dv#lg.",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},

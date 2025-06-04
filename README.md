@@ -9,47 +9,6 @@ Feature ideas and feedback on the Golang code is welcome 🤝.
 
 **Note: These docs have been updated for the upcoming version. If you would like to use 0.0.1, view the instructions [here](https://github.com/tmobaird/td/blob/58f6f37468b30ebfc8db83538deff3c2532b01b7/README.md#installation).**
 
-### Installation
-
-TODO
-
-### Modules
-
-This project consists of two modules for end usage:
-- TD: Local todo list manager
-- LG: Local developer logs tool
-
-The usage for each is below.
-
-### TD Usage
-
-TD is a simple todo list manager that supports multiple lists, todo statuses, and AI-based scheduling.
-This tool allows users to manage and optimize their time.
-
-```
-Usage:
-  dv td [flags]
-  dv td [command]
-
-Available Commands:
-  add         Add a new todo to list
-  completion  Generate the autocompletion script for the specified shell
-  config      Shows the current config.
-  context     Get or set the current context
-  help        Help about any command
-  list        List todos for current context
-  mark        Update a todo's current status
-  open        Open current todo list for editing
-  rank        Moves an existing todo from one position to another.
-  remove      Remove a todo from list
-  rename      Renames an existing item in the todo list
-
-Flags:
-  -h, --help   help for td
-
-Use "dv td [command] --help" for more information about a command.
-```
-
 ### Roadmap
 
 - [x] add
@@ -78,6 +37,49 @@ Use "dv td [command] --help" for more information about a command.
   - [x] show
   - [ ] log
   - [ ] template files
+
+### Installation
+
+TODO
+
+### Modules
+
+This project consists of two modules for end usage:
+- td: Local todo list manager
+- lg: Local developer logs tool
+
+The usage for each is below.
+
+## td
+
+td is a simple todo list manager that supports multiple lists, todo statuses, and AI-based scheduling.
+This tool allows users to manage and optimize their time.
+
+### Usage
+
+```
+Usage:
+  dv td [flags]
+  dv td [command]
+
+Available Commands:
+  add         Add a new todo to list
+  completion  Generate the autocompletion script for the specified shell
+  config      Shows the current config.
+  context     Get or set the current context
+  help        Help about any command
+  list        List todos for current context
+  mark        Update a todo's current status
+  open        Open current todo list for editing
+  rank        Moves an existing todo from one position to another.
+  remove      Remove a todo from list
+  rename      Renames an existing item in the todo list
+
+Flags:
+  -h, --help   help for td
+
+Use "dv td [command] --help" for more information about a command.
+```
 
 ### Todo Metadata
 
@@ -116,3 +118,30 @@ The scheduler will follow a few rules when scheduling items:
 5. Scheduled todos that are broken up by meetings will have their duration be split as well.
 
 **The only current supported calendar is Gmail. This will be improved soon.**
+
+## lg
+
+The intention behind lg is to be simple, local daily dev log tool (inspiration: https://dev.to/teamcamp/daily-logs-for-devs-how-a-5-minute-habit-can-10x-your-weekly-output-4peb).
+The purpose is to make it easier for developers to ramp down their work at the end of a work day,
+easier to ramp up at the start of a new work day,
+and easily reflect on what has been done over time.
+All this is done by a quick 5 minute writing exercise at the end of each day,
+leverage the lg cli.
+
+### Usage
+
+```
+Usage:
+  dv lg [flags]
+  dv lg [command]
+
+Available Commands:
+  log         shows you a list of your past developer logs
+  show        shows the latest developer log you have completed
+  write       opens a file for writing your daily developer log
+
+Flags:
+  -h, --help   help for lg
+
+Use "dv lg [command] --help" for more information about a command.
+```
