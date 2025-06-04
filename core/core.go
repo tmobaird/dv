@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v3"
@@ -64,6 +65,10 @@ func LogFilePath(t time.Time) string {
 
 func LogFileExists(d time.Time) bool {
 	return FileExists(os.DirFS(LogDirectoryPath()), fmt.Sprintf("%s.md", d.Format(LOG_FILE_TIME_FORMAT)))
+}
+
+func LogFileNameToTime(filename string) (time.Time, error) {
+	return time.Parse(LOG_FILE_TIME_FORMAT, strings.Split(filename, ".md")[0])
 }
 
 func ConfigFileExists(filesystem fs.FS) bool {

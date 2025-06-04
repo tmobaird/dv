@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/tmobaird/dv/colors"
@@ -133,13 +132,13 @@ func getLatestLogDate() (time.Time, error) {
 	}
 
 	sort.Slice(entries, func(i, j int) bool {
-		a, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entries[i].Name(), ".md")[0])
-		b, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entries[j].Name(), ".md")[0])
+		a, _ := core.LogFileNameToTime(entries[i].Name())
+		b, _ := core.LogFileNameToTime(entries[j].Name())
 
 		return a.After(b)
 	})
 
-	on, err := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entries[0].Name(), ".md")[0])
+	on, err := core.LogFileNameToTime(entries[0].Name())
 	if err != nil {
 		return time.Now(), err
 	}
@@ -148,7 +147,7 @@ func getLatestLogDate() (time.Time, error) {
 }
 
 func logEntryOutput(filename string, latest bool) string {
-	day, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(filename, ".md")[0])
+	day, _ := core.LogFileNameToTime(filename)
 	contents, err := os.ReadFile(filepath.Join(core.LogDirectoryPath(), filename))
 	if err == nil {
 		prefix := ""

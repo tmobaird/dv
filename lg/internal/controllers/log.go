@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"sort"
-	"strings"
+	"strconv"
 	"time"
 
 	"github.com/tmobaird/dv/core"
@@ -54,7 +55,18 @@ func (controller Controller) RunLog(args LogArgs) (string, error) {
 	sortLogs(filtered)
 
 	for i, entry := range filtered {
+		day, err := core.LogFileNameToTime(entry.Name())
 		output := logEntryOutput(entry.Name(), i == 0)
+		if err == nil {
+			diff := time.Since(day) / time.Hour / 24
+			arg := strconv.FormatInt(int64(diff), 10) + "d"
+			if arg == "0" {
+				arg = "today"
+			} else if arg == "1" {
+				arg = "yesterday"
+			}
+			output += fmt.Sprintf("To view: dv lg show %s\n\n", arg)
+		}
 		stdin.Write([]byte(output))
 	}
 
@@ -95,7 +107,7 @@ func getPager() string {
 func filterLogs(files []os.DirEntry, before time.Time, after time.Time) []os.DirEntry {
 	filtered := []os.DirEntry{}
 	for _, entry := range files {
-		t, err := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entry.Name(), ".md")[0])
+		t, err := core.LogFileNameToTime(entry.Name())
 		if err == nil && entry.Type().IsRegular() && t.Before(before) && t.After(after) {
 			filtered = append(filtered, entry)
 		}
@@ -105,8 +117,8 @@ func filterLogs(files []os.DirEntry, before time.Time, after time.Time) []os.Dir
 
 func sortLogs(files []os.DirEntry) {
 	sort.Slice(files, func(i, j int) bool {
-		a, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(files[i].Name(), ".md")[0])
-		b, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(files[j].Name(), ".md")[0])
+		a, _ := core.LogFileNameToTime(files[i].Name())
+		b, _ := core.LogFileNameToTime(files[j].Name())
 
 		return a.After(b)
 	})
