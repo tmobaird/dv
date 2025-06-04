@@ -1,16 +1,13 @@
 package controllers
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"sort"
 	"strings"
 	"time"
 
-	"github.com/tmobaird/dv/colors"
 	"github.com/tmobaird/dv/core"
 )
 
@@ -57,7 +54,7 @@ func (controller Controller) RunLog(args LogArgs) (string, error) {
 	sortLogs(filtered)
 
 	for i, entry := range filtered {
-		output := logEntryOutput(entry, i == 0)
+		output := logEntryOutput(entry.Name(), i == 0)
 		stdin.Write([]byte(output))
 	}
 
@@ -65,20 +62,6 @@ func (controller Controller) RunLog(args LogArgs) (string, error) {
 	cmd.Wait()
 
 	return "", nil
-}
-
-func logEntryOutput(entry os.DirEntry, latest bool) string {
-	day, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entry.Name(), ".md")[0])
-	contents, err := os.ReadFile(filepath.Join(core.LogDirectoryPath(), entry.Name()))
-	if err == nil {
-		prefix := ""
-		if latest {
-			prefix += " " + colors.AddTextStyle("(latest)", colors.CODE_BOLD)
-		}
-		prefix = colors.AddColor(fmt.Sprintf("Date: %s%s", day.Format(time.DateOnly), prefix), colors.FG_YELLOW)
-		return fmt.Sprintf("%s\n%s\n\n", prefix, contents)
-	}
-	return ""
 }
 
 func parseBeforeAndAfter(args LogArgs) (time.Time, time.Time, error) {

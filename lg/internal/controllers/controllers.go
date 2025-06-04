@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/tmobaird/dv/colors"
 	"github.com/tmobaird/dv/core"
 )
 
@@ -53,6 +57,7 @@ func (controller Controller) RunWrite() (string, error) {
 }
 
 func (controller Controller) RunShow() (string, error) {
+	var err error
 	on := time.Now()
 	if len(controller.Args) > 0 {
 		term := controller.Args[0]
@@ -74,14 +79,19 @@ func (controller Controller) RunShow() (string, error) {
 				}
 			}
 		}
-	}
-
-	if core.LogFileExists(on) {
-		contents, err := os.ReadFile(core.LogFilePath(on))
+	} else { // use latest
+		on, err = getLatestLogDate()
 		if err != nil {
 			return "", err
 		}
-		return string(contents), nil
+	}
+
+	if core.LogFileExists(on) {
+		contents := logEntryOutput(core.LogFileName(on), true)
+		if err != nil {
+			return "", err
+		}
+		return contents, nil
 	} else {
 		return "", fmt.Errorf("%s does not exist", core.LogFileName(on))
 	}
@@ -114,4 +124,39 @@ func createLogFile(t time.Time) (string, error) {
 func createLogsDirectory() error {
 	dirPath := core.LogDirectoryPath()
 	return os.MkdirAll(dirPath, 0755)
+}
+
+func getLatestLogDate() (time.Time, error) {
+	entries, err := os.ReadDir(core.LogDirectoryPath())
+	if err != nil {
+		return time.Now(), err
+	}
+
+	sort.Slice(entries, func(i, j int) bool {
+		a, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entries[i].Name(), ".md")[0])
+		b, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entries[j].Name(), ".md")[0])
+
+		return a.After(b)
+	})
+
+	on, err := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(entries[0].Name(), ".md")[0])
+	if err != nil {
+		return time.Now(), err
+	}
+
+	return on, nil
+}
+
+func logEntryOutput(filename string, latest bool) string {
+	day, _ := time.Parse(core.LOG_FILE_TIME_FORMAT, strings.Split(filename, ".md")[0])
+	contents, err := os.ReadFile(filepath.Join(core.LogDirectoryPath(), filename))
+	if err == nil {
+		prefix := ""
+		if latest {
+			prefix += " " + colors.AddTextStyle("(latest)", colors.CODE_BOLD)
+		}
+		prefix = colors.AddColor(fmt.Sprintf("Date: %s%s", day.Format(time.DateOnly), prefix), colors.FG_YELLOW)
+		return fmt.Sprintf("%s\n\n%s\n", prefix, contents)
+	}
+	return ""
 }
