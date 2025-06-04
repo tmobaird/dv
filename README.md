@@ -74,8 +74,8 @@ Use "dv td [command] --help" for more information about a command.
   td schedule --generate   # refreshes the last schedule
   ```
 - [ ] LG Enhancements
-  - [ ] write
-  - [ ] show
+  - [x] write
+  - [x] show
   - [ ] log
   - [ ] template files
 

@@ -22,6 +22,7 @@ func (config Config) IsBlank() bool {
 }
 
 const FILENAME = "config.yaml"
+const LOG_FILE_TIME_FORMAT = "20060102"
 
 func BasePath() string {
 	usr, _ := user.Current()
@@ -54,7 +55,7 @@ func LogDirectoryPath() string {
 }
 
 func LogFileName(t time.Time) string {
-	return fmt.Sprintf("%s.md", t.Format("20060102"))
+	return fmt.Sprintf("%s.md", t.Format(LOG_FILE_TIME_FORMAT))
 }
 
 func LogFilePath(t time.Time) string {
@@ -62,7 +63,7 @@ func LogFilePath(t time.Time) string {
 }
 
 func LogFileExists(d time.Time) bool {
-	return FileExists(os.DirFS(LogDirectoryPath()), fmt.Sprintf("%s.md", d.Format("20060102")))
+	return FileExists(os.DirFS(LogDirectoryPath()), fmt.Sprintf("%s.md", d.Format(LOG_FILE_TIME_FORMAT)))
 }
 
 func ConfigFileExists(filesystem fs.FS) bool {
