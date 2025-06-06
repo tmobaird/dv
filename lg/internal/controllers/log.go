@@ -33,22 +33,24 @@ func (args LogArgs) HasAfter() bool {
 	return args.After != ""
 }
 
-func (controller Controller) RunLog(args LogArgs) (string, error) {
+func (controller Controller) RunLog(args LogArgs) (OutputTarget, error) {
+	writeTo := OutputTarget{}
 	before, after, err := parseBeforeAndAfter(args)
 	if err != nil {
-		return "", err
+		return writeTo, err
 	}
 
 	cmd, stdin, err := startPager()
 	if err != nil {
-		return "", err
+		writeTo = NewSimpleOutputTarget()
+	} else {
+		writeTo = NewCmdOutputTarget(stdin, cmd)
 	}
 
 	entries, err := os.ReadDir(core.LogDirectoryPath())
 	if err != nil {
-		cmd.Cancel()
-		stdin.Close()
-		return "", err
+		writeTo.Close()
+		return writeTo, err
 	}
 
 	filtered := filterLogs(entries, before, after)
@@ -67,13 +69,12 @@ func (controller Controller) RunLog(args LogArgs) (string, error) {
 			}
 			output += fmt.Sprintf("To view: dv lg show %s\n\n", arg)
 		}
-		stdin.Write([]byte(output))
+		writeTo.Write([]byte(output))
 	}
 
-	stdin.Close()
-	cmd.Wait()
+	writeTo.Close()
 
-	return "", nil
+	return writeTo, err
 }
 
 func parseBeforeAndAfter(args LogArgs) (time.Time, time.Time, error) {
@@ -94,14 +95,6 @@ func parseBeforeAndAfter(args LogArgs) (time.Time, time.Time, error) {
 	}
 
 	return before, after, nil
-}
-
-func getPager() string {
-	pager := os.Getenv("PAGER")
-	if pager == "" {
-		pager = "less"
-	}
-	return pager
 }
 
 func filterLogs(files []os.DirEntry, before time.Time, after time.Time) []os.DirEntry {
@@ -139,4 +132,12 @@ func startPager() (*exec.Cmd, io.WriteCloser, error) {
 	}
 
 	return cmd, stdin, nil
+}
+
+func getPager() string {
+	pager := os.Getenv("PAGER")
+	if pager == "" {
+		pager = "less"
+	}
+	return pager
 }

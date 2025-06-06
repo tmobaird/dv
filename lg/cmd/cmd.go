@@ -25,7 +25,7 @@ var WriteCmd = &cobra.Command{
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {
-			cmd.OutOrStdout().Write([]byte(result))
+			cmd.OutOrStdout().Write([]byte(result.String()))
 		}
 	},
 }
@@ -47,7 +47,7 @@ var ShowCmd = &cobra.Command{
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {
-			cmd.OutOrStdout().Write([]byte(result))
+			cmd.OutOrStdout().Write([]byte(result.String()))
 		}
 	},
 }
@@ -72,7 +72,7 @@ var LogCmd = &cobra.Command{
 		if err != nil {
 			cmd.OutOrStderr().Write([]byte(err.Error()))
 		} else {
-			cmd.OutOrStdout().Write([]byte(result))
+			cmd.OutOrStdout().Write([]byte(result.String()))
 		}
 	},
 }

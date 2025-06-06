@@ -33,15 +33,16 @@ type Controller struct {
 	Config core.Config
 }
 
-func (controller Controller) RunWrite() (string, error) {
+func (controller Controller) RunWrite() (OutputTarget, error) {
+	writeTo := NewSimpleOutputTarget()
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
-		return "", errors.New("must set $EDITOR to edit config")
+		return writeTo, errors.New("must set $EDITOR to edit config")
 	}
 
 	logFilePath, err := createLogFile(time.Now())
 	if err != nil {
-		return "", err
+		return writeTo, err
 	}
 
 	cmd := exec.Command(os.Getenv("EDITOR"), logFilePath)
@@ -50,13 +51,15 @@ func (controller Controller) RunWrite() (string, error) {
 
 	err = cmd.Run()
 	if err != nil {
-		return "", err
+		return writeTo, err
 	}
 
-	return fmt.Sprintf("Opened file for writing %s.", core.LogFileName(time.Now())), nil
+	writeTo.WriteString(fmt.Sprintf("Opened file for writing %s.", core.LogFileName(time.Now())))
+	return writeTo, nil
 }
 
-func (controller Controller) RunShow() (string, error) {
+func (controller Controller) RunShow() (OutputTarget, error) {
+	writeTo := OutputTarget{}
 	var err error
 	on := time.Now()
 	if len(controller.Args) > 0 {
@@ -82,19 +85,27 @@ func (controller Controller) RunShow() (string, error) {
 	} else { // use latest
 		on, err = getLatestLogDate()
 		if err != nil {
-			return "", err
+			return writeTo, err
 		}
+	}
+
+	cmd, stdin, err := startPager()
+	if err != nil {
+		writeTo = NewSimpleOutputTarget()
+	} else {
+		writeTo = NewCmdOutputTarget(stdin, cmd)
 	}
 
 	if core.LogFileExists(on) {
 		contents := logEntryOutput(core.LogFileName(on), true)
-		if err != nil {
-			return "", err
-		}
-		return contents, nil
+		writeTo.WriteString(contents)
+		writeTo.Close()
+		err = nil
 	} else {
-		return "", fmt.Errorf("%s does not exist", core.LogFileName(on))
+		err = fmt.Errorf("%s does not exist", core.LogFileName(on))
 	}
+
+	return writeTo, err
 }
 
 func createLogFile(t time.Time) (string, error) {
