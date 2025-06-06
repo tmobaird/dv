@@ -33,6 +33,10 @@ func TestMarkdown(t *testing.T) {
 		}
 	})
 
+	t.Run("'# ' in the middle of a line does nothing", func(t *testing.T) {
+		testutils.AssertEqual(t, "hello # world", MdToOutput("hello # world"))
+	})
+
 	t.Run("**Bold** characters properly get substituted", func(t *testing.T) {
 		expected := fmt.Sprintf("%sHello%s", colors.EscapeCode(colors.CODE_BOLD), colors.EscapeCode(colors.CODE_RESET_BOLD))
 		got := MdToOutput("**Hello**")
