@@ -13,18 +13,19 @@ import (
 
 	"github.com/tmobaird/dv/colors"
 	"github.com/tmobaird/dv/core"
+	"github.com/tmobaird/dv/lg/internal/markdown"
 )
 
-const LOG_FILE_TEMPLATE = `### Worked on
+const LOG_FILE_TEMPLATE = `## Worked on
 
 
-### Up next
+## Up next
 
 
-### Issues & Surprises
+## Issues & Surprises
 
 
-### Other thoughts
+## Other thoughts
 `
 
 type Controller struct {
@@ -155,7 +156,7 @@ func logEntryOutput(filename string, latest bool) string {
 			prefix += " " + colors.AddTextStyle("(latest)", colors.CODE_BOLD)
 		}
 		prefix = colors.AddColor(fmt.Sprintf("Date: %s%s", day.Format(time.DateOnly), prefix), colors.FG_YELLOW)
-		return fmt.Sprintf("%s\n\n%s\n", prefix, contents)
+		return fmt.Sprintf("%s\n\n%s\n", prefix, markdown.MdToOutput(string(contents)))
 	}
 	return ""
 }

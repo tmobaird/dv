@@ -60,9 +60,9 @@ func (controller Controller) RunLog(args LogArgs) (string, error) {
 		if err == nil {
 			diff := time.Since(day) / time.Hour / 24
 			arg := strconv.FormatInt(int64(diff), 10) + "d"
-			if arg == "0" {
+			if arg == "0d" {
 				arg = "today"
-			} else if arg == "1" {
+			} else if arg == "1d" {
 				arg = "yesterday"
 			}
 			output += fmt.Sprintf("To view: dv lg show %s\n\n", arg)

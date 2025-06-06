@@ -8,12 +8,15 @@ const CODE_RESET = 0
 
 // Text Styles
 const CODE_BOLD = 1
+const CODE_ITALICS = 3
 const CODE_UNDERLINE = 4
 const CODE_RESET_BOLD = 22
+const CODE_RESET_ITALICS = 23
 const CODE_RESET_UNDERLINE = 24
 
 var resetMap map[int]int = map[int]int{
 	CODE_BOLD:      CODE_RESET_BOLD,
+	CODE_ITALICS:   CODE_RESET_ITALICS,
 	CODE_UNDERLINE: CODE_RESET_UNDERLINE,
 }
 
