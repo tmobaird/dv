@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -39,6 +40,22 @@ func AssertError(t *testing.T, err error) {
 	}
 }
 
+func AssertContains(t *testing.T, total, includes string) {
+	t.Helper()
+
+	if !strings.Contains(total, includes) {
+		t.Errorf("expected '%s'\nto contain '%s'", total, includes)
+	}
+}
+
+func AssertDoesNotContain(t *testing.T, total, includes string) {
+	t.Helper()
+	
+	if strings.Contains(total, includes) {
+		t.Errorf("expected '%s'\nto not contain '%s'", total, includes)
+	}
+}
+
 func FileContentEquals(t *testing.T, expected string, file *os.File) {
 	t.Helper()
 
@@ -49,10 +66,17 @@ func FileContentEquals(t *testing.T, expected string, file *os.File) {
 	AssertEqual(t, expected, string(data))
 }
 
+func SetupDv(t *testing.T) {
+	err := os.MkdirAll("tmp", 0755)
+	AssertNoError(t, err)
+
+	os.Setenv("DV_BASE_PATH", "tmp")
+}
+
 func CreateConfigFile(t *testing.T) *os.File {
 	t.Helper()
 
-	os.Setenv("DV_BASE_PATH", "tmp")
+	SetupDv(t)
 	file, err := os.Create("tmp/config.yaml")
 	if err != nil {
 		t.Errorf("Failed to create tmp file %s", err.Error())
@@ -86,6 +110,13 @@ func CreateListsDirectory(t *testing.T) string {
 	return dirname
 }
 
+func CreateLogsDirectory(t *testing.T) string {
+	dirname := "tmp/logs"
+	err := os.MkdirAll(dirname, 0755)
+	AssertNoError(t, err)
+	return dirname
+}
+
 func RunCmd(t *testing.T, cmd *cobra.Command) *bytes.Buffer {
 	outputBuf := &bytes.Buffer{}
 	rootCmd, outputBuf := SetupCmd(cmd)
@@ -95,6 +126,13 @@ func RunCmd(t *testing.T, cmd *cobra.Command) *bytes.Buffer {
 }
 
 func CreateTodosFile(t *testing.T, filename, content string) {
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0644)
+	AssertNoError(t, err)
+	_, err = file.Write([]byte(content))
+	AssertNoError(t, err)
+}
+
+func CreateLogFile(t *testing.T, filename string, content string) {
 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY, 0644)
 	AssertNoError(t, err)
 	_, err = file.Write([]byte(content))

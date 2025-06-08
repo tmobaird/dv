@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -55,6 +56,11 @@ func (controller Controller) RunLog(args LogArgs) (OutputTarget, error) {
 
 	filtered := filterLogs(entries, before, after)
 	sortLogs(filtered)
+
+	if len(filtered) == 0 {
+		writeTo.Close()
+		return writeTo, errors.New("no dev logs exist")
+	}
 
 	for i, entry := range filtered {
 		day, err := core.LogFileNameToTime(entry.Name())

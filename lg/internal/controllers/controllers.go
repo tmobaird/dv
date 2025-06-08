@@ -40,6 +40,7 @@ func (controller Controller) RunWrite() (OutputTarget, error) {
 		return writeTo, errors.New("must set $EDITOR to edit config")
 	}
 
+	logFileName := core.LogFileName(time.Now())
 	logFilePath, err := createLogFile(time.Now())
 	if err != nil {
 		return writeTo, err
@@ -54,7 +55,7 @@ func (controller Controller) RunWrite() (OutputTarget, error) {
 		return writeTo, err
 	}
 
-	writeTo.WriteString(fmt.Sprintf("Opened file for writing %s.", core.LogFileName(time.Now())))
+	writeTo.WriteString(fmt.Sprintf("Opened file for writing %s.", logFileName))
 	return writeTo, nil
 }
 
@@ -149,6 +150,10 @@ func getLatestLogDate() (time.Time, error) {
 
 		return a.After(b)
 	})
+
+	if len(entries) == 0 {
+		return time.Now(), errors.New("latest dev log does not exist")
+	}
 
 	on, err := core.LogFileNameToTime(entries[0].Name())
 	if err != nil {
