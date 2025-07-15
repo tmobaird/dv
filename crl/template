@@ -1,0 +1,11 @@
+# crl editor documentation
+#
+#
+---
+url: <substitute>
+headers:
+- header-one: value
+---
+{
+    "message": "This is a post body"
+}

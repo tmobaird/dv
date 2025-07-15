@@ -1,6 +1,7 @@
 package core
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -138,4 +139,22 @@ func PersistConfig(config Config) error {
 
 	err = SaveConfig(file, config)
 	return err
+}
+
+func CreateTempFile(pattern string) (*os.File, error) {
+	if pattern == "" {
+		pattern = "*"
+	}
+
+	file, err := os.CreateTemp(BasePath(), pattern)
+	return file, err
+}
+
+func Editor() (string, error) {
+	editor := os.Getenv("EDITOR")
+	if len(editor) > 0 {
+		return editor, nil
+	} else {
+		return "", errors.New("$EDITOR not set")
+	}
 }
