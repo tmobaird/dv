@@ -3,6 +3,7 @@
 #
 ---
 url: <substitute>
+method: GET
 headers:
 - header-one: value
 ---

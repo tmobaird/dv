@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"slices"
 	"strings"
@@ -41,14 +42,56 @@ const (
 	Delete
 )
 
-func copyTemplateContentsToTemp(file *os.File) error {
+type ArgMetadata struct {
+	Url         string
+	Method      string
+	ContentType string
+}
+
+func createArgMetadata(args ...string) ArgMetadata {
+	url := "http://replace"
+	method := "GET"
+
+	rawArgs := strings.Join(args, " ")
+
+	// parse url
+	urlRegex := regexp.MustCompile(`--url=(\S+)`)
+	urlMatches := urlRegex.FindStringSubmatch(rawArgs)
+	if len(urlMatches) > 1 {
+		url = urlMatches[1]
+	}
+
+	// parse method
+	methodRegex := regexp.MustCompile(`--method=(GET|POST|PUT|PATCH|DELETE)`)
+	methodMatches := methodRegex.FindStringSubmatch(rawArgs)
+	if len(methodMatches) > 1 {
+		method = methodMatches[1]
+	}
+
+	contentType := "application/json"
+	if strings.Contains(rawArgs, "--form") {
+		contentType = "application/x-www-form-urlencoded"
+	} else if strings.Contains(rawArgs, "plain") {
+		contentType = "text/plain"
+	} else if strings.Contains(rawArgs, "xml") {
+		contentType = "application/xml"
+	}
+	return ArgMetadata{
+		Url:         url,
+		Method:      method,
+		ContentType: contentType,
+	}
+}
+
+func copyTemplateContentsToTemp(file *os.File, argMetadata ArgMetadata) error {
 	_, filename, _, _ := runtime.Caller(0)
-	tmplPath := filepath.Join(filepath.Dir(filename), "template")
+	tmplPath := filepath.Join(filepath.Dir(filename), "template.md")
 	tmpl, err := template.ParseFiles(tmplPath)
+
 	if err != nil {
 		return err
 	}
-	err = tmpl.Execute(file, nil)
+	err = tmpl.Execute(file, argMetadata)
 	if err != nil {
 		return err
 	}
@@ -79,14 +122,12 @@ func parseTempFile(file *os.File) (CurlRequest, error) {
 	// parse the file contents
 	fileContents := string(contents)
 	groups := strings.Split(fileContents, "---")
-	if len(groups) < 3 {
+	groups = groups[1:] // we dont care about the first item, cause it should be blank
+	if len(groups) < 2 {
 		return request, errors.New("must include more parts")
 	}
 
-	// parse front matter
-	rawMetadata := strings.Trim(groups[1], "\n")
-	var metadata map[string]interface{}
-	err = yaml.Unmarshal([]byte(rawMetadata), &metadata)
+	metadata, err := parseFrontMatter(groups[0])
 	if err != nil {
 		return request, err
 	}
@@ -99,24 +140,28 @@ func parseTempFile(file *os.File) (CurlRequest, error) {
 	request.Url = url
 	request.Method = parseMethod(metadata)
 	request.Headers = parseHeaders(metadata)
-	request.Body = groups[2]
+	request.Body = parseBody(groups[1])
 	return request, nil
 }
 
 var crlCmd = &cobra.Command{
-	Use:   "crl",
-	Short: "a curl enhancement",
-	Long:  "TODO",
+	Use:                "crl",
+	Short:              "a curl enhancement",
+	Long:               "TODO",
+	DisableFlagParsing: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		// create tmp file
-		file, err := core.CreateTempFile("")
+		file, err := core.CreateTempFile("*.md")
 		if err != nil {
 			writeErr(cmd, err)
 		}
 		defer os.Remove(file.Name())
 
+		// get metadata from args
+		metadata := createArgMetadata(os.Args...)
+
 		// copy contents from template
-		err = copyTemplateContentsToTemp(file)
+		err = copyTemplateContentsToTemp(file, metadata)
 		if err != nil {
 			writeErr(cmd, err)
 			return
@@ -176,6 +221,16 @@ func parseMethod(metadata map[string]interface{}) RequestMethod {
 	return Get
 }
 
+func parseFrontMatter(frontMatter string) (map[string]interface{}, error) {
+	frontMatter = strings.Trim(frontMatter, "\n")
+	var metadata map[string]interface{}
+	err := yaml.Unmarshal([]byte(frontMatter), &metadata)
+	if err != nil {
+		return metadata, err
+	}
+	return metadata, nil
+}
+
 func parseHeaders(metadata map[string]interface{}) map[string]string {
 	if headersRaw, ok := metadata["headers"]; ok {
 		if headersList, ok := headersRaw.([]interface{}); ok && len(headersList) > 0 {
@@ -192,6 +247,20 @@ func parseHeaders(metadata map[string]interface{}) map[string]string {
 		}
 	}
 	return map[string]string{}
+}
+
+func parseBody(rawBody string) string {
+	rawBody = strings.Trim(rawBody, "\n")
+	if strings.HasPrefix(rawBody, "```") {
+		lines := strings.Split(rawBody, "\n")
+		lines = lines[1:] // throw away line one
+		if strings.HasPrefix(lines[len(lines)-1], "```") {
+			lines = lines[0 : len(lines)-1]
+		}
+		return strings.Join(lines, "\n")
+	} else {
+		return rawBody
+	}
 }
 
 func writeErr(cmd *cobra.Command, err error) {

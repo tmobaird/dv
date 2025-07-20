@@ -23,7 +23,6 @@ func quoteArg(arg string) string {
 	return arg
 }
 
-// BuildCommandString reconstructs the shell-equivalent command
 func buildCommandString(name string, args []string) string {
 	quoted := make([]string, len(args))
 	for i, arg := range args {
@@ -41,7 +40,10 @@ func (request CurlRequest) Execute(logger io.Writer) ([]byte, error) {
 		args = append(args, "-H")
 		args = append(args, fmt.Sprintf("%s: %s", key, value))
 	}
-	fmt.Println(request.Url, request.Url.String())
+	if len(request.Body) > 0 {
+		args = append(args, "--data")
+		args = append(args, request.Body)
+	}
 	args = append(args, request.Url.String())
 
 	logger.Write([]byte(fmt.Sprintf("Making curl request: %s\n\n", buildCommandString("curl", args))))
